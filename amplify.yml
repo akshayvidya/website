@@ -1,0 +1,21 @@
+version: 1
+frontend:
+  phases:
+    build:
+      commands:
+        - echo "AkshayVidya — static PWA, no build step"
+  artifacts:
+    baseDirectory: /
+    files:
+      - '**/*'
+  cache:
+    paths: []
+  customHeaders:
+    - pattern: 'sw.js'
+      headers:
+        - key: Cache-Control
+          value: 'no-cache, no-store, must-revalidate'
+    - pattern: 'manifest.webmanifest'
+      headers:
+        - key: Content-Type
+          value: 'application/manifest+json'

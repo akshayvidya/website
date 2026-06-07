@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0d2050">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AkshayVidya">
+<title>AkshayVidya — School ERP & PWA, powered by EduChetna</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0d2050;--navy-2:#16306b;--saffron:#f0a500;--saffron-deep:#d98e00;
+  --teal:#0f9d8c;--cream:#f0f2f7;--paper:#ffffff;--ink:#1a2233;--muted:#5c6677;
+  --line:rgba(13,32,80,.10);--shadow:0 18px 50px -20px rgba(13,32,80,.34);--r:18px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Manrope',sans-serif;background:var(--cream);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body.modal-open{overflow:hidden;touch-action:none}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+a{text-decoration:none;color:inherit}
+img{display:block;max-width:100%}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.03;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+header{position:sticky;top:0;z-index:200;backdrop-filter:blur(14px);background:rgba(240,242,247,.85);border-bottom:1px solid var(--line)}
+nav{display:flex;align-items:center;justify-content:space-between;height:76px}
+.brand{display:flex;align-items:center;gap:13px;font-weight:800;font-size:1.2rem;letter-spacing:-.02em;color:var(--navy)}
+.brand .mark{width:42px;height:42px;flex-shrink:0}
+.brand small{display:block;font-size:.6rem;font-weight:600;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;margin-top:-2px}
+.navlinks{display:flex;gap:30px;align-items:center;font-size:.93rem;font-weight:600}
+.navlinks a{color:var(--muted);transition:color .2s}
+.navlinks a:hover{color:var(--navy)}
+.btn{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:.92rem;padding:11px 22px;border-radius:999px;border:none;cursor:pointer;transition:transform .18s,box-shadow .18s}
+.btn-primary{background:linear-gradient(135deg,var(--saffron),var(--saffron-deep));color:var(--navy);box-shadow:0 10px 24px -8px rgba(217,142,0,.55)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 16px 30px -8px rgba(217,142,0,.7)}
+.btn-ghost{background:var(--navy);color:#fff}
+.btn-ghost:hover{transform:translateY(-2px)}
+.menu-btn{display:none;background:none;border:none;cursor:pointer}
+
+.hero{position:relative;padding:72px 0 90px;overflow:hidden}
+.hero-bg{position:absolute;inset:0;z-index:0}
+.hero-bg .blob{position:absolute;border-radius:50%;filter:blur(75px);opacity:.45}
+.b1{width:480px;height:480px;background:radial-gradient(circle,rgba(240,165,0,.55),transparent 70%);top:-120px;right:-90px}
+.b2{width:420px;height:420px;background:radial-gradient(circle,rgba(15,157,140,.35),transparent 70%);bottom:-140px;left:-100px}
+.hero-grid{position:relative;z-index:2;display:grid;grid-template-columns:1.02fr .98fr;gap:50px;align-items:center}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--saffron-deep);background:rgba(240,165,0,.14);padding:7px 15px;border-radius:999px;margin-bottom:24px}
+.eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--saffron-deep);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+h1.hero-title{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(2.5rem,5.3vw,4rem);line-height:1.05;letter-spacing:-.02em;color:var(--navy)}
+h1.hero-title em{font-style:italic;color:var(--saffron-deep)}
+.hero p.lead{font-size:1.12rem;color:var(--muted);margin:22px 0 32px;max-width:520px}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.trust{margin-top:30px;display:flex;gap:24px;flex-wrap:wrap;font-size:.84rem;color:var(--muted);font-weight:600}
+.trust span{display:flex;align-items:center;gap:7px}
+.trust svg{width:16px;height:16px;color:var(--teal)}
+.hero-visual{position:relative}
+.shot-desktop{border-radius:14px;overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--line);background:#fff}
+.shot-desktop .bar{height:30px;background:var(--navy);display:flex;align-items:center;gap:7px;padding:0 13px}
+.shot-desktop .bar i{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.3)}
+.shot-desktop img{width:100%}
+.shot-phone{position:absolute;width:148px;right:-14px;bottom:-34px;border-radius:20px;overflow:hidden;border:6px solid var(--navy);box-shadow:var(--shadow);background:var(--navy);z-index:3;animation:float 6s ease-in-out infinite}
+.shot-phone img{width:100%;border-radius:13px}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+
+.marquee{background:var(--navy);color:#fff;padding:17px 0;overflow:hidden;white-space:nowrap}
+.marquee-track{display:inline-flex;animation:scroll 28s linear infinite;font-family:'Fraunces',serif;font-style:italic;font-size:1.1rem;opacity:.92}
+.marquee-track span{display:flex;align-items:center;gap:48px;padding-right:48px}
+.marquee-track span::after{content:"◆";color:var(--saffron);font-style:normal;font-size:.7rem}
+@keyframes scroll{to{transform:translateX(-50%)}}
+
+section{padding:90px 0}
+.sec-head{max-width:680px;margin-bottom:52px}
+.sec-tag{font-size:.78rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--teal)}
+.sec-head h2{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(2rem,3.6vw,2.9rem);line-height:1.1;color:var(--navy);margin:14px 0 16px;letter-spacing:-.01em}
+.sec-head p{font-size:1.06rem;color:var(--muted)}
+
+.modgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.mod{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:30px 26px;transition:transform .25s,box-shadow .25s;position:relative;overflow:hidden}
+.mod:hover{transform:translateY(-6px);box-shadow:var(--shadow)}
+.mod::before{content:"";position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,var(--saffron),var(--teal));transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.mod:hover::before{transform:scaleX(1)}
+.mic{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;margin-bottom:18px;background:rgba(240,165,0,.14)}
+.mic svg{width:26px;height:26px;color:var(--saffron-deep)}
+.mod:nth-child(2n) .mic{background:rgba(15,157,140,.14)}
+.mod:nth-child(2n) .mic svg{color:var(--teal)}
+.mod h3{font-size:1.16rem;font-weight:800;color:var(--navy);margin-bottom:9px;letter-spacing:-.01em}
+.mod p{font-size:.93rem;color:var(--muted)}
+.mod ul{list-style:none;margin-top:14px;display:flex;flex-direction:column;gap:7px}
+.mod li{font-size:.82rem;color:var(--ink);display:flex;align-items:center;gap:8px;font-weight:600}
+.mod li::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--saffron-deep);flex-shrink:0}
+
+/* MODULE EXPLORER */
+.explorer{background:var(--paper)}
+.exp-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:34px}
+.exp-tab{padding:10px 18px;border-radius:999px;border:1px solid var(--line);background:var(--cream);color:var(--muted);font-weight:700;font-size:.86rem;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:7px}
+.exp-tab svg{width:16px;height:16px}
+.exp-tab.active{background:var(--navy);border-color:var(--navy);color:#fff}
+.exp-tab.active svg{color:var(--saffron)}
+.exp-panel{display:none}
+.exp-panel.active{display:grid;grid-template-columns:.85fr 1.15fr;gap:48px;align-items:center;animation:fade .4s}
+@keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.exp-info .tag{font-size:.76rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--teal)}
+.exp-info h3{font-family:'Fraunces',serif;font-weight:600;font-size:1.8rem;color:var(--navy);margin:10px 0 12px;line-height:1.15}
+.exp-info p{color:var(--muted);font-size:1rem;margin-bottom:16px}
+.exp-info ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+.exp-info li{display:flex;gap:11px;align-items:flex-start;font-size:.93rem;font-weight:600;color:var(--ink)}
+.exp-info li svg{width:18px;height:18px;color:var(--saffron-deep);flex-shrink:0;margin-top:3px}
+.exp-shot{display:flex;justify-content:center}
+.frame{border-radius:13px;overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--line);background:#fff;width:100%}
+.frame .bar{height:28px;background:var(--navy);display:flex;align-items:center;gap:6px;padding:0 12px}
+.frame .bar i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.3)}
+.frame img{width:100%}
+.pframe{width:248px;border:8px solid var(--navy);border-radius:30px;overflow:hidden;box-shadow:var(--shadow);background:var(--navy)}
+.pframe img{width:100%;border-radius:22px}
+.phone-duo{display:flex;gap:20px;justify-content:center;flex-wrap:wrap}
+.phone-duo .pframe{width:215px}
+
+.showcase{background:var(--cream)}
+.show-row{display:grid;grid-template-columns:1fr 1.15fr;gap:54px;align-items:center;margin-bottom:84px}
+.show-row:last-child{margin-bottom:0}
+.show-row.flip{grid-template-columns:1.15fr 1fr}
+.show-row.flip .show-text{order:2}
+.show-text .tag{font-size:.78rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--teal)}
+.show-text h3{font-family:'Fraunces',serif;font-weight:600;font-size:1.9rem;color:var(--navy);margin:12px 0 14px;line-height:1.15}
+.show-text p{color:var(--muted);font-size:1.02rem;margin-bottom:18px}
+.show-text ul{list-style:none;display:flex;flex-direction:column;gap:11px}
+.show-text li{display:flex;gap:11px;align-items:flex-start;font-size:.95rem;font-weight:600;color:var(--ink)}
+.show-text li svg{width:19px;height:19px;color:var(--saffron-deep);flex-shrink:0;margin-top:3px}
+
+.portals{background:var(--navy);color:#fff;position:relative;overflow:hidden}
+.portals .sec-head h2{color:#fff}.portals .sec-head p{color:rgba(255,255,255,.7)}.portals .sec-tag{color:var(--saffron)}
+.ptabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:38px}
+.ptab{padding:11px 22px;border-radius:999px;border:1px solid rgba(255,255,255,.18);background:transparent;color:rgba(255,255,255,.7);font-weight:700;font-size:.9rem;cursor:pointer;transition:.2s}
+.ptab.active{background:var(--saffron);border-color:var(--saffron);color:var(--navy)}
+.ppanel{display:none;grid-template-columns:1fr 1fr;gap:46px;align-items:center}
+.ppanel.active{display:grid;animation:fade .4s}
+.ppanel h3{font-family:'Fraunces',serif;font-weight:600;font-size:1.9rem;margin-bottom:16px}
+.ppanel ul{list-style:none;display:flex;flex-direction:column;gap:13px}
+.ppanel li{display:flex;gap:12px;align-items:flex-start;font-size:.97rem;color:rgba(255,255,255,.85)}
+.ppanel li svg{width:20px;height:20px;color:var(--saffron);flex-shrink:0;margin-top:2px}
+
+.secfeat{display:grid;grid-template-columns:1.1fr 1fr;gap:50px;align-items:center}
+.sec-points{display:flex;flex-direction:column;gap:22px}
+.sp{display:flex;gap:16px}
+.sp .num{font-family:'Fraunces',serif;font-size:1.3rem;font-weight:700;color:var(--saffron-deep);width:44px;height:44px;border-radius:12px;background:rgba(240,165,0,.13);display:grid;place-items:center;flex-shrink:0}
+.sp h4{font-size:1.08rem;font-weight:800;color:var(--navy);margin-bottom:4px}
+.sp p{font-size:.92rem;color:var(--muted)}
+.vault{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:30px;box-shadow:var(--shadow)}
+.vault-h{display:flex;align-items:center;gap:10px;font-weight:800;color:var(--navy);margin-bottom:20px}
+.vault-h svg{width:22px;height:22px;color:var(--teal)}
+.school-row{display:flex;align-items:center;gap:13px;padding:14px;border-radius:13px;background:var(--cream);margin-bottom:11px;border:1px solid var(--line)}
+.school-row .sch-ic{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;font-weight:800;color:#fff;font-size:.9rem}
+.school-row .info{flex:1}
+.school-row .info .nm{font-size:.9rem;font-weight:800;color:var(--navy)}
+.school-row .info .sub{font-size:.72rem;color:var(--muted)}
+.lock{font-size:.66rem;font-weight:700;color:var(--teal);display:flex;align-items:center;gap:5px}
+.lock svg{width:13px;height:13px}
+
+.statsband{background:linear-gradient(135deg,var(--saffron),var(--saffron-deep));color:var(--navy);padding:62px 0}
+.statgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:30px;text-align:center}
+.statgrid .n{font-family:'Fraunces',serif;font-size:2.9rem;font-weight:700;line-height:1}
+.statgrid .l{font-size:.9rem;font-weight:700;opacity:.85;margin-top:8px}
+
+.pwa{background:var(--paper)}
+.pwagrid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.pwa-card{text-align:center;padding:30px 20px;border-radius:var(--r);border:1px solid var(--line);transition:.25s}
+.pwa-card:hover{background:var(--cream);transform:translateY(-5px)}
+.pwa-ic{width:60px;height:60px;margin:0 auto 16px;border-radius:16px;background:var(--navy);display:grid;place-items:center}
+.pwa-ic svg{width:28px;height:28px;color:var(--saffron)}
+.pwa-card h4{font-size:1.04rem;font-weight:800;color:var(--navy);margin-bottom:7px}
+.pwa-card p{font-size:.87rem;color:var(--muted)}
+
+.cta{text-align:center}
+.cta-box{background:var(--navy);border-radius:30px;padding:70px 40px;position:relative;overflow:hidden}
+.cta-box .blob{position:absolute;border-radius:50%;filter:blur(80px)}
+.cta-box .cb1{width:300px;height:300px;background:rgba(240,165,0,.4);top:-100px;left:-60px}
+.cta-box .cb2{width:300px;height:300px;background:rgba(15,157,140,.35);bottom:-120px;right:-60px}
+.cta-box>*{position:relative;z-index:2}
+.cta-box h2{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(2rem,4vw,3rem);color:#fff;margin-bottom:16px;line-height:1.1}
+.cta-box p{color:rgba(255,255,255,.78);font-size:1.08rem;max-width:520px;margin:0 auto 32px}
+.cta-box .hero-cta{justify-content:center}
+
+footer{background:var(--navy);color:rgba(255,255,255,.65);padding:60px 0 30px}
+.foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:40px;margin-bottom:44px}
+.foot-grid .brand{color:#fff;margin-bottom:16px}
+.foot-about{font-size:.9rem;max-width:300px;line-height:1.7}
+.foot-col h5{color:#fff;font-size:.82rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:16px;font-weight:800}
+.foot-col a,.foot-link{display:block;font-size:.9rem;margin-bottom:10px;transition:color .2s;background:none;border:none;padding:0;cursor:pointer;font-family:inherit;color:inherit;text-align:left;width:100%}
+.foot-col a:hover,.foot-link:hover{color:var(--saffron)}
+.foot-bottom{border-top:1px solid rgba(255,255,255,.12);padding-top:24px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;font-size:.84rem}
+.foot-bottom .made{color:var(--saffron)}
+
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s,transform .7s}
+.reveal.in{opacity:1;transform:none}
+
+@media(max-width:920px){
+  .hero-grid,.ppanel.active,.secfeat,.foot-grid,.show-row,.show-row.flip,.exp-panel.active{grid-template-columns:1fr}
+  .show-row.flip .show-text{order:0}
+  .exp-panel.active .exp-shot{order:-1}
+  .hero-visual{margin-top:30px}
+  .shot-phone{width:120px;right:8px;bottom:-26px}
+  .modgrid,.pwagrid{grid-template-columns:1fr 1fr}
+  .statgrid{grid-template-columns:1fr 1fr;gap:36px 20px}
+  .navlinks{display:none}.menu-btn{display:block}
+  .foot-grid{grid-template-columns:1fr 1fr}
+  .show-row{margin-bottom:60px}
+}
+@media(max-width:560px){
+  .modgrid,.pwagrid,.statgrid,.foot-grid{grid-template-columns:1fr}
+  section{padding:60px 0}.cta-box{padding:48px 24px}
+}
+
+.modal-overlay{
+  position:fixed;inset:0;z-index:10000;
+  background:rgba(13,32,80,.55);backdrop-filter:blur(6px);
+  display:flex;align-items:center;justify-content:center;
+  padding:max(12px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));
+  overflow-y:auto;-webkit-overflow-scrolling:touch;
+  opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s;
+}
+.modal-overlay.open{opacity:1;visibility:visible}
+.modal{
+  display:flex;flex-direction:column;
+  background:var(--paper);border-radius:22px;
+  width:min(480px,calc(100vw - 24px));
+  max-height:min(720px,calc(100dvh - 24px));
+  margin:auto;
+  flex-shrink:0;
+  box-shadow:0 28px 80px -20px rgba(13,32,80,.45);
+  transform:translateY(16px) scale(.98);
+  transition:transform .25s;
+  border:1px solid var(--line);
+  overflow:hidden;
+}
+.modal-overlay.open .modal{transform:none}
+.modal-head{
+  flex-shrink:0;
+  display:flex;align-items:flex-start;justify-content:space-between;gap:16px;
+  padding:22px 24px 16px;
+  border-bottom:1px solid var(--line);
+  background:var(--paper);
+}
+.modal-head h2{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(1.35rem,4vw,1.65rem);color:var(--navy);line-height:1.15;letter-spacing:-.01em}
+.modal-head p{font-size:.9rem;color:var(--muted);margin-top:6px;line-height:1.45}
+.modal-close{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--cream);cursor:pointer;display:grid;place-items:center;flex-shrink:0;transition:background .2s}
+.modal-close:hover{background:#e8ebf2}
+.modal-close svg{width:18px;height:18px;color:var(--navy)}
+.modal-body{
+  flex:1 1 auto;
+  min-height:0;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;
+  padding:18px 24px max(22px,env(safe-area-inset-bottom));
+}
+.contact-form{display:flex;flex-direction:column;gap:14px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.form-field label{font-size:.78rem;font-weight:700;color:var(--navy);letter-spacing:.02em}
+.form-field input,.form-field select,.form-field textarea{
+  font-family:inherit;font-size:max(16px,.93rem);width:100%;
+  padding:12px 14px;border-radius:12px;border:1px solid var(--line);
+  background:#fff;color:var(--ink);transition:border-color .2s,box-shadow .2s;
+}
+.form-field input:focus,.form-field select:focus,.form-field textarea:focus{outline:none;border-color:var(--saffron);box-shadow:0 0 0 3px rgba(240,165,0,.18)}
+.form-field textarea{resize:vertical;min-height:80px;max-height:160px}
+.form-submit{width:100%;margin-top:4px;justify-content:center}
+.form-note{font-size:.78rem;color:var(--muted);text-align:center;line-height:1.5}
+.form-status{font-size:.88rem;font-weight:600;text-align:center;padding:10px 12px;border-radius:12px;display:none}
+.form-status.error{display:block;background:rgba(220,38,38,.08);color:#b91c1c}
+.form-status.success{display:block;background:rgba(15,157,140,.1);color:#0f766e}
+.form-status.loading{display:block;background:rgba(240,165,0,.12);color:var(--saffron-deep)}
+@media(max-width:560px){
+  .modal{border-radius:18px;width:calc(100vw - 16px);max-height:calc(100dvh - 16px)}
+  .modal-head{padding:18px 18px 14px}
+  .modal-body{padding:16px 18px max(18px,env(safe-area-inset-bottom))}
+  .form-row{grid-template-columns:1fr}
+}
+@media(max-height:520px){
+  .modal-overlay{align-items:flex-start;padding-top:8px;padding-bottom:8px}
+  .modal{max-height:calc(100dvh - 16px)}
+  .modal-head{padding-top:14px;padding-bottom:12px}
+  .form-field textarea{min-height:64px;max-height:100px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="wrap">
+    <a href="#" class="brand"><span class="mark"><svg viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg"><polygon points="110,8 200,60 200,160 110,212 20,160 20,60" fill="none" stroke="#f0a500" stroke-width="11"/><polygon points="110,22 186,66 186,154 110,198 34,154 34,66" fill="#0d2050"/><path d="M110,42 C95,66 91,95 110,116 C129,95 125,66 110,42 Z" fill="#f0a500"/><path d="M110,56 C101,75 98,94 110,110 C122,94 119,75 110,56 Z" fill="#fdeea0"/><polygon points="40,168 58,168 96,40 78,40" fill="#ffffff"/><polygon points="96,40 110,40 92,168 74,168" fill="#ffffff"/><rect x="46" y="120" width="50" height="14" rx="3" fill="#ffffff"/><polygon points="112,40 130,40 142,168 124,168" fill="#f0a500"/><polygon points="148,40 166,40 142,168 124,168" fill="#f0a500"/></svg></span><span>AkshayVidya<small>powered by EduChetna</small></span></a>
+    <div class="navlinks">
+      <a href="#modules">Modules</a><a href="#explorer">Explore</a><a href="#portals">Portals</a><a href="#security">Security</a><a href="#pwa">Why PWA</a>
+    </div>
+    <button type="button" class="btn btn-ghost open-contact" data-intent="demo">Book a Demo</button>
+    <button class="menu-btn" aria-label="menu"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0d2050" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="hero-bg"><div class="blob b1"></div><div class="blob b2"></div></div>
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow"><span class="dot"></span>Made for Indian schools</span>
+      <h1 class="hero-title">One platform to run your <em>entire school</em> — on any device.</h1>
+      <p class="lead">AkshayVidya is a multi-tenant School ERP and Progressive Web App. Admissions, fees, academics, attendance and parent communication — installable on any phone, tablet or desktop. No app store. No downloads.</p>
+      <div class="hero-cta">
+        <button type="button" class="btn btn-primary open-contact" data-intent="demo">Book a Live Demo →</button>
+        <a href="#explorer" class="btn" style="background:#fff;color:var(--navy);border:1px solid var(--line)">Explore the Modules</a>
+      </div>
+      <div class="trust">
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Schema-level data isolation</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>UIDAI-compliant Aadhaar</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>GST invoices · Razorpay</span>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="shot-desktop"><div class="bar"><i></i><i></i><i></i></div><picture><source srcset="assets/screens/fees_dashboard.webp" type="image/webp"><img src="assets/screens/fees_dashboard.jpg" alt="Fees Management dashboard" loading="lazy"></picture></div>
+      <div class="shot-phone"><picture><source srcset="assets/screens/mobile_parent.webp" type="image/webp"><img src="assets/screens/mobile_parent.jpg" alt="Parent portal mobile" loading="lazy"></picture></div>
+    </div>
+  </div>
+</section>
+
+<div class="marquee"><div class="marquee-track">
+  <span>Admissions&nbsp;&nbsp; Fee Management&nbsp;&nbsp; Report Cards&nbsp;&nbsp; Attendance&nbsp;&nbsp; WhatsApp Alerts&nbsp;&nbsp; Timetables&nbsp;&nbsp; Online Exams&nbsp;&nbsp; Parent Portal</span>
+  <span>Admissions&nbsp;&nbsp; Fee Management&nbsp;&nbsp; Report Cards&nbsp;&nbsp; Attendance&nbsp;&nbsp; WhatsApp Alerts&nbsp;&nbsp; Timetables&nbsp;&nbsp; Online Exams&nbsp;&nbsp; Parent Portal</span>
+</div></div>
+
+<!-- MODULES OVERVIEW -->
+<section id="modules">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-tag">Core Functional Modules</span>
+      <h2>Everything a school office juggles — in one connected system.</h2>
+      <p>Six tightly integrated modules built around the realities of Indian school operations, from admission to the final report card.</p>
+    </div>
+    <div class="modgrid">
+      <div class="mod reveal"><div class="mic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><h3>Student Information System</h3><p>Full student lifecycle from admission enquiry to graduation.</p><ul><li>Admission workflow & offers</li><li>Aadhaar last-4, UIDAI-compliant</li><li>Guardian & enrollment records</li></ul></div>
+      <div class="mod reveal"><div class="mic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></div><h3>Indian Fee Management</h3><p>Built for transport, lab and library heads with real late-fee logic.</p><ul><li>Class & student-wise structures</li><li>Razorpay with verified webhooks</li><li>GST invoices with HSN/SAC codes</li></ul></div>
+      <div class="mod reveal"><div class="mic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div><h3>Academic Engine</h3><p>Where daily teaching lives — timetables, attendance and marks.</p><ul><li>CBSE / ICSE / State report cards</li><li>Per-period & daily attendance</li><li>Conflict-aware timetables</li></ul></div>
+      <div class="mod reveal"><div class="mic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div><h3>Examination Portal</h3><p>Run assessments online and capture offline marks effortlessly.</p><ul><li>Online quizzes</li><li>Offline marks entry</li><li>Auto grade computation</li></ul></div>
+      <div class="mod reveal"><div class="mic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><h3>Communication Hub</h3><p>Reach every parent on the channel they actually check.</p><ul><li>WhatsApp via Meta Cloud API</li><li>SMS (MSG91 / Fast2SMS) DLT-ready</li><li>In-app messaging & broadcasts</li></ul></div>
+      <div class="mod reveal"><div class="mic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg></div><h3>Child & Parent Portal</h3><p>A warmer, simpler interface designed just for students & families.</p><ul><li>Kid-only profile & homework</li><li>Online fee payment (parent)</li><li>Results & teacher notes</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- MODULE EXPLORER (real screenshots) -->
+<section id="explorer" class="explorer">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-tag">Explore the Product</span>
+      <h2>Every module, shown with real screens.</h2>
+      <p>Click through the actual interface — these are live views from AkshayVidya, the same screens your staff and families use every day.</p>
+    </div>
+    <div class="exp-tabs reveal">
+      <button class="exp-tab active" data-e="fees"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>Fees</button>
+      <button class="exp-tab" data-e="payments"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Payments</button>
+      <button class="exp-tab" data-e="reports"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>Report Cards</button>
+      <button class="exp-tab" data-e="attendance"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Attendance</button>
+      <button class="exp-tab" data-e="academics"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Academics</button>
+      <button class="exp-tab" data-e="comms"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Communication</button>
+      <button class="exp-tab" data-e="onboarding"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>Bulk Onboarding</button>
+    </div>
+
+    <div class="exp-panel active" data-epanel="fees">
+      <div class="exp-info">
+        <span class="tag">Accounts & Admin</span>
+        <h3>Fee management that fits the Indian school office.</h3>
+        <p>Set up fee components once, assign them to grades with installment schedules, and let student accounts generate automatically.</p>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Tuition, Transport, Lab & Library heads as reusable templates</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Split any fee into up to 12 installments with their own due dates</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Sibling discounts, scholarships and overdue nudges with audit log</li>
+        </ul>
+      </div>
+      <div class="exp-shot"><div class="frame"><div class="bar"><i></i><i></i><i></i></div><picture><source srcset="assets/screens/fee_components.webp" type="image/webp"><img src="assets/screens/fee_components.jpg" alt="Fee components" loading="lazy"></picture></div></div>
+    </div>
+
+    <div class="exp-panel" data-epanel="payments">
+      <div class="exp-info">
+        <span class="tag">Parents · Online Payments</span>
+        <h3>Parents pay fees in a few taps — settled straight to school.</h3>
+        <p>Each school connects its own Razorpay account. Parents pay by card, UPI or netbanking and get an instant confirmation; webhooks record it idempotently.</p>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Installment-aware "Pay Fees" with live balance due</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>OTP-secured checkout, retry-safe order creation</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Payment confirmation with reference ID and GST receipt</li>
+        </ul>
+      </div>
+      <div class="exp-shot"><div class="phone-duo"><div class="pframe"><picture><source srcset="assets/screens/mobile_paysuccess.webp" type="image/webp"><img src="assets/screens/mobile_paysuccess.jpg" alt="Payment successful" loading="lazy"></picture></div></div></div>
+    </div>
+
+    <div class="exp-panel" data-epanel="reports">
+      <div class="exp-info">
+        <span class="tag">Teachers · Admin · Parents</span>
+        <h3>Report cards, reviewed and published in one flow.</h3>
+        <p>Teachers upload a draft per student per term. It stays private until an admin reviews and publishes — then parents download a polished, board-formatted card.</p>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Draft → review → publish workflow with clear status</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>CBSE scholastic layout — term marks, grades, class rank</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>School letterhead, attendance and teacher's remarks</li>
+        </ul>
+      </div>
+      <div class="exp-shot"><div class="phone-duo"><div class="frame" style="max-width:330px"><div class="bar"><i></i><i></i><i></i></div><picture><source srcset="assets/screens/report_cards.webp" type="image/webp"><img src="assets/screens/report_cards.jpg" alt="Report cards admin" loading="lazy"></picture></div><div class="pframe" style="width:200px"><picture><source srcset="assets/screens/mobile_reportpdf.webp" type="image/webp"><img src="assets/screens/mobile_reportpdf.jpg" alt="Report card PDF" loading="lazy"></picture></div></div></div>
+    </div>
+
+    <div class="exp-panel" data-epanel="attendance">
+      <div class="exp-info">
+        <span class="tag">Teachers</span>
+        <h3>Attendance in seconds, from any phone.</h3>
+        <p>Teachers open today's class and tap Present, Absent or Late per student. Primary classes mark daily; secondary marks per-period. Parents see it instantly.</p>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>One-tap P / A / L toggles with live present count</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Present, Absent, Other and Unmarked at a glance</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Teacher dashboard with students, messages and concerns</li>
+        </ul>
+      </div>
+      <div class="exp-shot"><div class="phone-duo"><div class="pframe"><picture><source srcset="assets/screens/mobile_teacher.webp" type="image/webp"><img src="assets/screens/mobile_teacher.jpg" alt="Teacher dashboard" loading="lazy"></picture></div><div class="pframe"><picture><source srcset="assets/screens/mobile_attendance.webp" type="image/webp"><img src="assets/screens/mobile_attendance.jpg" alt="Attendance marking" loading="lazy"></picture></div></div></div>
+    </div>
+
+    <div class="exp-panel" data-epanel="academics">
+      <div class="exp-info">
+        <span class="tag">Academic Engine</span>
+        <h3>Subjects, leave and the daily classroom.</h3>
+        <p>Subjects are mapped to teachers, leave requests run through a simple calendar flow, and assignments reach the right class with due dates attached.</p>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Subject list with assigned subject teachers</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Date-picker driven leave and assignment scheduling</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Homework and notices delivered straight to families</li>
+        </ul>
+      </div>
+      <div class="exp-shot"><div class="phone-duo"><div class="pframe"><picture><source srcset="assets/screens/mobile_subjects.webp" type="image/webp"><img src="assets/screens/mobile_subjects.jpg" alt="Subjects" loading="lazy"></picture></div><div class="pframe"><picture><source srcset="assets/screens/mobile_leave.webp" type="image/webp"><img src="assets/screens/mobile_leave.jpg" alt="Leave / scheduling" loading="lazy"></picture></div></div></div>
+    </div>
+
+    <div class="exp-panel" data-epanel="comms">
+      <div class="exp-info">
+        <span class="tag">Communication Hub</span>
+        <h3>Announcements, messages and concerns in one inbox.</h3>
+        <p>Parents get school announcements, two-way messages with teachers, and a structured way to raise concerns — with browser push notifications so nothing is missed.</p>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Announcements, Messages and Concerns tabs in one place</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Raise a concern per child with category and priority</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Opt-in push notifications for alerts without opening the app</li>
+        </ul>
+      </div>
+      <div class="exp-shot"><div class="phone-duo"><div class="pframe"><picture><source srcset="assets/screens/mobile_messages.webp" type="image/webp"><img src="assets/screens/mobile_messages.jpg" alt="Messages" loading="lazy"></picture></div><div class="pframe"><picture><source srcset="assets/screens/mobile_concerns.webp" type="image/webp"><img src="assets/screens/mobile_concerns.jpg" alt="Raise a concern" loading="lazy"></picture></div></div></div>
+    </div>
+
+    <div class="exp-panel" data-epanel="onboarding">
+      <div class="exp-info">
+        <span class="tag">Admin · Setup</span>
+        <h3>Onboard a whole school with bulk uploads.</h3>
+        <p>Spin up academic years, grade levels, sections, teachers, parents and students from CSV/XLSX templates — with validation, preview and duplicate detection.</p>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Ten guided entity uploads with required-field hints</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Preview rows and catch errors before committing</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Natural-key duplicate detection (re-upload updates rows)</li>
+        </ul>
+      </div>
+      <div class="exp-shot"><div class="frame"><div class="bar"><i></i><i></i><i></i></div><picture><source srcset="assets/screens/bulk_uploads.webp" type="image/webp"><img src="assets/screens/bulk_uploads.jpg" alt="Bulk uploads" loading="lazy"></picture></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- DEEPER SHOWCASE -->
+<section class="showcase">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-tag">Inside the Fee Engine</span>
+      <h2>The hardest part of Indian school software, solved.</h2>
+      <p>Indian fee structures are genuinely complex. AkshayVidya handles installments, discounts and isolated payment accounts without hand-holding.</p>
+    </div>
+    <div class="show-row reveal">
+      <div class="show-text">
+        <span class="tag">Assignments & Installments</span>
+        <h3>Attach a fee to a grade, split it your way.</h3>
+        <p>Pick one-shot or up to twelve installments, each with its own amount and due date. The system tracks allocation so nothing slips.</p>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Quarterly, term-wise or annual schedules</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>"Fully allocated" validation before you save</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Fee accounts auto-created for every enrolled student</li>
+        </ul>
+      </div>
+      <div class="frame"><div class="bar"><i></i><i></i><i></i></div><picture><source srcset="assets/screens/installments.webp" type="image/webp"><img src="assets/screens/installments.jpg" alt="Assign fee installments" loading="lazy"></picture></div>
+    </div>
+    <div class="show-row flip reveal">
+      <div class="show-text">
+        <span class="tag">Discounts & Waivers</span>
+        <h3>Sibling discounts, scholarships and financial aid.</h3>
+        <p>Grant per-student concessions with a clear reason and audit trail. Balances update live so accounts always reconcile.</p>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Sibling, scholarship, staff-ward and financial-aid categories</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Fixed-amount or percentage, applied to chosen installments</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Every waiver logged with who, when and why</li>
+        </ul>
+      </div>
+      <div class="frame"><div class="bar"><i></i><i></i><i></i></div><picture><source srcset="assets/screens/discounts.webp" type="image/webp"><img src="assets/screens/discounts.jpg" alt="Discounts and waivers" loading="lazy"></picture></div>
+    </div>
+  </div>
+</section>
+
+<!-- PORTALS -->
+<section id="portals" class="portals">
+  <div class="hero-bg"><div class="blob b2" style="opacity:.3"></div></div>
+  <div class="wrap" style="position:relative;z-index:2">
+    <div class="sec-head reveal">
+      <span class="sec-tag">Role-Based Portals</span>
+      <h2>One backend. A purpose-built experience for every role.</h2>
+      <p>Six roles, each with exactly the access they need. The child & parent portal is genuinely different — warmer, larger, friendlier.</p>
+    </div>
+    <div class="ptabs">
+      <button class="ptab active" data-p="teacher">Teacher</button>
+      <button class="ptab" data-p="accounts">Accounts</button>
+      <button class="ptab" data-p="parent">Child / Parent</button>
+    </div>
+
+    <div class="ppanel active" data-panel="teacher">
+      <div>
+        <h3>Classroom, attendance & marks</h3>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Today's classes, students, messages and concerns at a glance</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Mark per-period or daily attendance in seconds</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Upload report card drafts and assign homework</li>
+        </ul>
+      </div>
+      <div style="display:flex;justify-content:center"><div class="pframe"><picture><source srcset="assets/screens/mobile_teacher.webp" type="image/webp"><img src="assets/screens/mobile_teacher.jpg" alt="Teacher portal" loading="lazy"></picture></div></div>
+    </div>
+    <div class="ppanel" data-panel="accounts">
+      <div>
+        <h3>Fees, receipts & financial reporting</h3>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Set up components and assign fees with installment schedules</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Track collections, overdue and discounts in one dashboard</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>GST-compliant invoices and a full audit log</li>
+        </ul>
+      </div>
+      <div style="display:flex;justify-content:center"><div class="frame"><div class="bar"><i></i><i></i><i></i></div><picture><source srcset="assets/screens/fees_dashboard.webp" type="image/webp"><img src="assets/screens/fees_dashboard.jpg" alt="Accounts portal" loading="lazy"></picture></div></div>
+    </div>
+    <div class="ppanel" data-panel="parent">
+      <div>
+        <h3>A friendlier world for kids & parents</h3>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Each family sees only their own linked children</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Homework, results, messages and raise-a-concern built in</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Pay fees online and download receipts in a few taps</li>
+        </ul>
+      </div>
+      <div style="display:flex;justify-content:center"><div class="phone-duo"><div class="pframe"><picture><source srcset="assets/screens/mobile_parent.webp" type="image/webp"><img src="assets/screens/mobile_parent.jpg" alt="Parent home" loading="lazy"></picture></div><div class="pframe"><picture><source srcset="assets/screens/mobile_assignments.webp" type="image/webp"><img src="assets/screens/mobile_assignments.jpg" alt="Assignments" loading="lazy"></picture></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SECURITY -->
+<section id="security">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-tag">Architecture & Security</span>
+      <h2>Each school lives in its own vault.</h2>
+      <p>AkshayVidya is built on schema-based multi-tenancy — the gold standard for SaaS ERPs. One robust system, complete logical isolation.</p>
+    </div>
+    <div class="secfeat">
+      <div class="sec-points reveal">
+        <div class="sp"><div class="num">01</div><div><h4>Schema-based isolation</h4><p>School A can never touch School B's data. Subdomain routing maps every request to its own Postgres schema.</p></div></div>
+        <div class="sp"><div class="num">02</div><div><h4>Six-role RBAC</h4><p>Super Admin, School Admin, Teacher, Accounts, Parent and Student — each scoped to exactly what they should see.</p></div></div>
+        <div class="sp"><div class="num">03</div><div><h4>Hardened authentication</h4><p>Email login, Argon2id password hashing and JWTs with role and schema embedded in every token.</p></div></div>
+        <div class="sp"><div class="num">04</div><div><h4>Isolated payment accounts</h4><p>Each school connects its own Razorpay account — fees settle directly, with zero cross-school fund mixing.</p></div></div>
+      </div>
+      <div class="vault reveal">
+        <div class="vault-h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Isolated Tenant Schemas</div>
+        <div class="school-row"><div class="sch-ic" style="background:linear-gradient(135deg,var(--saffron),var(--saffron-deep))">DP</div><div class="info"><div class="nm">DPS RK Puram</div><div class="sub">dpsrkp.akshayvidya.com · schema_dpsrkp</div></div><div class="lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Locked</div></div>
+        <div class="school-row"><div class="sch-ic" style="background:linear-gradient(135deg,var(--teal),#0c7a6c)">GV</div><div class="info"><div class="nm">Green Valley Academy</div><div class="sub">greenvalley.akshayvidya.com · schema_gv</div></div><div class="lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Locked</div></div>
+        <div class="school-row"><div class="sch-ic" style="background:linear-gradient(135deg,var(--navy-2),var(--navy))">SV</div><div class="info"><div class="nm">St. Vincent's High</div><div class="sub">stvincents.akshayvidya.com · schema_sv</div></div><div class="lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Locked</div></div>
+        <div style="margin-top:18px;border-radius:12px;overflow:hidden;border:1px solid var(--line)"><picture><source srcset="assets/screens/login.webp" type="image/webp"><img src="assets/screens/login.jpg" alt="Per-school login with subdomain branding" loading="lazy"></picture></div>
+        <p style="font-size:.76rem;color:var(--muted);margin-top:10px;text-align:center">Each school signs in at its own subdomain — branding and data scoped per tenant.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="statsband">
+  <div class="wrap statgrid">
+    <div class="reveal"><div class="n" data-count="6">0</div><div class="l">Integrated modules</div></div>
+    <div class="reveal"><div class="n" data-count="6">0</div><div class="l">Distinct user roles</div></div>
+    <div class="reveal"><div class="n" data-count="3">0</div><div class="l">Boards supported</div></div>
+    <div class="reveal"><div class="n">100%</div><div class="l">Tenant isolation</div></div>
+  </div>
+</section>
+
+<section id="pwa" class="pwa">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-tag">Why a Progressive Web App</span>
+      <h2>Installs like an app. Updates like a website.</h2>
+      <p>No app store approvals, no storage headaches — AkshayVidya lives at one URL and works the same on every device a parent, teacher or admin owns.</p>
+    </div>
+    <div class="pwagrid">
+      <div class="pwa-card reveal"><div class="pwa-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 18h.01"/><rect x="5" y="2" width="14" height="20" rx="2"/></svg></div><h4>Install anywhere</h4><p>Add to home screen on Android, iOS, Windows or Mac in one tap.</p></div>
+      <div class="pwa-card reveal"><div class="pwa-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 1l22 22M16.7 16.7A11 11 0 0 1 5 14M2 8a16 16 0 0 1 4-3M8.5 4.5A11 11 0 0 1 22 8"/></svg></div><h4>Works offline</h4><p>Cached dashboards keep working even on patchy school Wi-Fi.</p></div>
+      <div class="pwa-card reveal"><div class="pwa-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.6 7.6a5 5 0 1 0 5 5L21 7"/><circle cx="11" cy="11" r="2"/></svg></div><h4>Instant updates</h4><p>Ship improvements once — every device gets them automatically.</p></div>
+      <div class="pwa-card reveal"><div class="pwa-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div><h4>Push notifications</h4><p>Fee reminders and attendance alerts land right on the lock screen.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="cta" class="cta">
+  <div class="wrap">
+    <div class="cta-box reveal">
+      <div class="blob cb1"></div><div class="blob cb2"></div>
+      <h2>Ready to bring your school online?</h2>
+      <p>Provision a fully isolated school in minutes with a single command. See AkshayVidya running on your own device — no installs required.</p>
+      <div class="hero-cta">
+        <button type="button" class="btn btn-primary open-contact" data-intent="demo">Book a Live Demo →</button>
+        <button type="button" class="btn open-contact" data-intent="sales" style="background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.25)">Talk to Sales</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="brand"><span class="mark" style="width:42px;height:42px"><svg viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg"><polygon points="110,8 200,60 200,160 110,212 20,160 20,60" fill="none" stroke="#f0a500" stroke-width="11"/><polygon points="110,22 186,66 186,154 110,198 34,154 34,66" fill="#0d2050"/><path d="M110,42 C95,66 91,95 110,116 C129,95 125,66 110,42 Z" fill="#f0a500"/><path d="M110,56 C101,75 98,94 110,110 C122,94 119,75 110,56 Z" fill="#fdeea0"/><polygon points="40,168 58,168 96,40 78,40" fill="#ffffff"/><polygon points="96,40 110,40 92,168 74,168" fill="#ffffff"/><rect x="46" y="120" width="50" height="14" rx="3" fill="#ffffff"/><polygon points="112,40 130,40 142,168 124,168" fill="#f0a500"/><polygon points="148,40 166,40 142,168 124,168" fill="#f0a500"/></svg></span><span style="color:#fff">AkshayVidya<small style="color:rgba(255,255,255,.55)">powered by EduChetna</small></span></div>
+        <p class="foot-about">The progressive school ERP built for Indian schools — multi-tenant, secure and installable on any device.</p>
+      </div>
+      <div class="foot-col"><h5>Product</h5><a href="#modules">Modules</a><a href="#explorer">Explore</a><a href="#portals">Portals</a><a href="#pwa">Why PWA</a></div>
+      <div class="foot-col"><h5>Solutions</h5><a href="#">For Admins</a><a href="#">For Teachers</a><a href="#">For Parents</a><a href="#">For Accounts</a></div>
+      <div class="foot-col"><h5>Company</h5><a href="#">About EduChetna</a><a href="#">Pricing</a><button type="button" class="open-contact foot-link" data-intent="contact">Contact</button><a href="#">Privacy</a></div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 EduChetna. All rights reserved.</span>
+      <span class="made">AkshayVidya — अक्षय विद्या · endless learning</span>
+    </div>
+  </div>
+</footer>
+
+<div class="modal-overlay" id="contact-modal" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="contact-modal-title">
+    <div class="modal-head">
+      <div>
+        <h2 id="contact-modal-title">Book a live demo</h2>
+        <p id="contact-modal-desc">Tell us about your school — we'll reach out within one business day.</p>
+      </div>
+      <button type="button" class="modal-close" id="contact-modal-close" aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form class="contact-form" id="contact-form">
+        <input type="hidden" name="subject" id="contact-subject" value="AkshayVidya — Demo request">
+        <input type="hidden" name="from_page" id="contact-from-page" value="">
+        <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" style="display:none" aria-hidden="true">
+        <div class="form-row">
+          <div class="form-field">
+            <label for="contact-name">Your name *</label>
+            <input type="text" id="contact-name" name="name" required autocomplete="name" placeholder="Priya Sharma">
+          </div>
+          <div class="form-field">
+            <label for="contact-role">Your role *</label>
+            <select id="contact-role" name="role" required>
+              <option value="">Select…</option>
+              <option value="School Owner / Trustee">School Owner / Trustee</option>
+              <option value="Principal / Director">Principal / Director</option>
+              <option value="Administrator">Administrator</option>
+              <option value="Accounts / Finance">Accounts / Finance</option>
+              <option value="IT / Operations">IT / Operations</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-field">
+          <label for="contact-school">School name *</label>
+          <input type="text" id="contact-school" name="school" required placeholder="Green Valley Public School">
+        </div>
+        <div class="form-row">
+          <div class="form-field">
+            <label for="contact-email">Email *</label>
+            <input type="email" id="contact-email" name="email" required autocomplete="email" placeholder="you@school.edu.in">
+          </div>
+          <div class="form-field">
+            <label for="contact-phone">Phone / WhatsApp *</label>
+            <input type="tel" id="contact-phone" name="phone" required autocomplete="tel" placeholder="+91 98765 43210">
+          </div>
+        </div>
+        <div class="form-field">
+          <label for="contact-message">Message <span style="font-weight:500;color:var(--muted)">(optional)</span></label>
+          <textarea id="contact-message" name="message" placeholder="Student strength, boards (CBSE/ICSE), modules you're most interested in…"></textarea>
+        </div>
+        <div class="form-status" id="contact-status" role="status"></div>
+        <button type="submit" class="btn btn-primary form-submit" id="contact-submit">Send request →</button>
+        <p class="form-note">We use your details only to respond to this enquiry. No spam.</p>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="contact-config.js"></script>
+<script>
+function tabset(btnSel, panelAttr, dataKey){
+  document.querySelectorAll(btnSel).forEach(t=>{
+    t.addEventListener('click',()=>{
+      const grp=t.parentElement;
+      grp.querySelectorAll(btnSel).forEach(x=>x.classList.remove('active'));
+      document.querySelectorAll('['+panelAttr+']').forEach(x=>x.classList.remove('active'));
+      t.classList.add('active');
+      document.querySelector('['+panelAttr+'="'+t.dataset[dataKey]+'"]').classList.add('active');
+    });
+  });
+}
+tabset('.exp-tab','data-epanel','e');
+tabset('.ptab','data-panel','p');
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(e=>io.observe(e));
+const co=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){const el=e.target,end=+el.dataset.count;let n=0;const step=()=>{n++;el.textContent=n;if(n<end)setTimeout(step,140)};step();co.unobserve(el)}})},{threshold:.5});
+document.querySelectorAll('[data-count]').forEach(e=>co.observe(e));
+
+(function(){
+  const modal=document.getElementById('contact-modal');
+  const form=document.getElementById('contact-form');
+  const statusEl=document.getElementById('contact-status');
+  const titleEl=document.getElementById('contact-modal-title');
+  const descEl=document.getElementById('contact-modal-desc');
+  const subjectEl=document.getElementById('contact-subject');
+  const fromPageEl=document.getElementById('contact-from-page');
+  const submitBtn=document.getElementById('contact-submit');
+  const closeBtn=document.getElementById('contact-modal-close');
+  const copy={
+    demo:{title:'Book a live demo',desc:"Tell us about your school — we'll reach out within one business day.",subject:'AkshayVidya — Demo request',btn:'Send demo request →'},
+    sales:{title:'Talk to sales',desc:'Pricing, rollout plans and multi-campus setups — our team will call you back.',subject:'AkshayVidya — Sales enquiry',btn:'Request a callback →'},
+    contact:{title:'Get in touch',desc:'Questions about AkshayVidya or EduChetna? Drop us a line.',subject:'AkshayVidya — Contact form',btn:'Send message →'}
+  };
+  let lastFocus=null;
+
+  function setStatus(type,text){
+    statusEl.className='form-status'+(type?' '+type:'');
+    statusEl.textContent=text||'';
+  }
+
+  function openContact(intent){
+    const c=copy[intent]||copy.demo;
+    titleEl.textContent=c.title;
+    descEl.textContent=c.desc;
+    subjectEl.value=c.subject;
+    submitBtn.textContent=c.btn;
+    submitBtn.disabled=false;
+    fromPageEl.value=location.href;
+    setStatus('','');
+    lastFocus=document.activeElement;
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden','false');
+    document.body.classList.add('modal-open');
+    document.body.style.overflow='hidden';
+    const body=modal.querySelector('.modal-body');
+    if(body)body.scrollTop=0;
+    setTimeout(()=>document.getElementById('contact-name').focus(),50);
+  }
+
+  function closeContact(){
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden','true');
+    document.body.classList.remove('modal-open');
+    document.body.style.overflow='';
+    if(lastFocus&&lastFocus.focus)lastFocus.focus();
+  }
+
+  document.querySelectorAll('.open-contact').forEach(btn=>{
+    btn.addEventListener('click',e=>{e.preventDefault();openContact(btn.dataset.intent||'demo');});
+  });
+  closeBtn.addEventListener('click',closeContact);
+  modal.addEventListener('click',e=>{if(e.target===modal)closeContact();});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal.classList.contains('open'))closeContact();});
+
+  form.addEventListener('submit',async e=>{
+    e.preventDefault();
+    const key=(window.CONTACT_CONFIG&&window.CONTACT_CONFIG.accessKey)||'';
+    if(!key||key.includes('REPLACE_WITH')){
+      setStatus('error','Form not configured yet. Add your Web3Forms key in contact-config.js');
+      return;
+    }
+    submitBtn.disabled=true;
+    setStatus('loading','Sending…');
+    const data=Object.fromEntries(new FormData(form));
+    data.access_key=key;
+    try{
+      const res=await fetch('https://api.web3forms.com/submit',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Accept':'application/json'},
+        body:JSON.stringify(data)
+      });
+      const json=await res.json();
+      if(json.success){
+        form.reset();
+        setStatus('success','Thank you! We received your request and will contact you soon.');
+        submitBtn.textContent='Sent ✓';
+        setTimeout(closeContact,2800);
+      }else{
+        throw new Error(json.message||'Submit failed');
+      }
+    }catch(err){
+      setStatus('error','Could not send. Please email us directly or try again.');
+      submitBtn.disabled=false;
+    }
+  });
+})();
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(()=>{}));
+}
+</script>
+</body>
+</html>
