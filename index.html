@@ -18,12 +18,23 @@
   --navy:#0d2050;--navy-2:#16306b;--saffron:#f0a500;--saffron-deep:#d98e00;
   --teal:#0f9d8c;--cream:#f0f2f7;--paper:#ffffff;--ink:#1a2233;--muted:#5c6677;
   --line:rgba(13,32,80,.10);--shadow:0 18px 50px -20px rgba(13,32,80,.34);--r:18px;
+  /* fluid page gutter: 20px on small phones → 48px on large screens,
+     plus device safe-area insets for notched phones in landscape */
+  --gutter:clamp(20px,5vw,48px);
+  --gutter-l:calc(var(--gutter) + env(safe-area-inset-left,0px));
+  --gutter-r:calc(var(--gutter) + env(safe-area-inset-right,0px));
+  --content:1180px;          /* readable content max width */
+  --shell:calc(var(--content) + var(--gutter) * 2);
 }
 *{margin:0;padding:0;box-sizing:border-box}
+/* children of grids/flex must be allowed to shrink, else they overflow the gutter */
+*{min-width:0}
 html{scroll-behavior:smooth}
-body{font-family:'Manrope',sans-serif;background:var(--cream);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+section[id],div[id]{scroll-margin-top:88px}
+body{font-family:'Manrope',sans-serif;background:var(--cream);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:clip}
 body.modal-open{overflow:hidden;touch-action:none}
-.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+/* fluid container: full width, capped, symmetric responsive gutters */
+.wrap{width:100%;max-width:var(--shell);margin-inline:auto;padding-inline:var(--gutter-l) var(--gutter-r)}
 a{text-decoration:none;color:inherit}
 img{display:block;max-width:100%}
 body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.03;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
@@ -41,9 +52,36 @@ nav{display:flex;align-items:center;justify-content:space-between;height:76px}
 .btn-primary:hover{transform:translateY(-2px);box-shadow:0 16px 30px -8px rgba(217,142,0,.7)}
 .btn-ghost{background:var(--navy);color:#fff}
 .btn-ghost:hover{transform:translateY(-2px)}
-.menu-btn{display:none;background:none;border:none;cursor:pointer}
+.menu-btn{display:none;background:none;border:none;cursor:pointer;width:42px;height:42px;border-radius:11px;align-items:center;justify-content:center;transition:background .2s}
+.menu-btn:hover{background:rgba(13,32,80,.06)}
+/* compact header CTA */
+.nav-cta{display:inline-flex;align-items:center;gap:7px;font-weight:700;font-size:.92rem;color:var(--navy);
+  padding:9px 17px;border-radius:999px;border:1px solid var(--navy);background:transparent;cursor:pointer;transition:background .2s,color .2s}
+.nav-cta:hover{background:var(--navy);color:#fff}
+.nav-cta svg{width:15px;height:15px}
+.nav-right{display:flex;align-items:center;gap:12px}
+/* mobile slide-down menu */
+.mobile-menu{position:fixed;inset:0;z-index:190;background:rgba(13,32,80,.4);backdrop-filter:blur(4px);
+  opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s}
+.mobile-menu.open{opacity:1;visibility:visible}
+.mobile-menu-panel{position:absolute;top:0;left:0;right:0;background:var(--paper);
+  padding:84px 22px max(28px,env(safe-area-inset-bottom));border-radius:0 0 24px 24px;
+  box-shadow:0 24px 60px -20px rgba(13,32,80,.4);transform:translateY(-110%);transition:transform .32s cubic-bezier(.2,.7,.2,1)}
+.mobile-menu.open .mobile-menu-panel{transform:none}
+.mobile-menu a{display:flex;align-items:center;justify-content:space-between;padding:15px 8px;font-weight:700;font-size:1.05rem;
+  color:var(--navy);border-bottom:1px solid var(--line)}
+.mobile-menu a:last-of-type{border-bottom:none}
+.mobile-menu a svg{width:18px;height:18px;color:var(--muted)}
+.mobile-menu .mm-cta{margin-top:18px;width:100%;justify-content:center}
+.mm-close{position:absolute;top:18px;right:18px;width:42px;height:42px;border-radius:11px;border:1px solid var(--line);
+  background:var(--cream);cursor:pointer;display:grid;place-items:center}
+.mm-close svg{width:20px;height:20px;color:var(--navy)}
 
 .hero{position:relative;padding:72px 0 90px;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;z-index:0;opacity:.5;
+  background-image:radial-gradient(rgba(13,32,80,.07) 1px,transparent 1px);background-size:26px 26px;
+  -webkit-mask-image:radial-gradient(ellipse 80% 70% at 50% 35%,#000 40%,transparent 80%);
+          mask-image:radial-gradient(ellipse 80% 70% at 50% 35%,#000 40%,transparent 80%)}
 .hero-bg{position:absolute;inset:0;z-index:0}
 .hero-bg .blob{position:absolute;border-radius:50%;filter:blur(75px);opacity:.45}
 .b1{width:480px;height:480px;background:radial-gradient(circle,rgba(240,165,0,.55),transparent 70%);top:-120px;right:-90px}
@@ -97,16 +135,34 @@ section{padding:90px 0}
 
 /* MODULE EXPLORER */
 .explorer{background:var(--paper)}
-.exp-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:34px}
-.exp-tab{padding:10px 18px;border-radius:999px;border:1px solid var(--line);background:var(--cream);color:var(--muted);font-weight:700;font-size:.86rem;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:7px}
-.exp-tab svg{width:16px;height:16px}
-.exp-tab.active{background:var(--navy);border-color:var(--navy);color:#fff}
-.exp-tab.active svg{color:var(--saffron)}
+/* App-style explorer: vertical rail + preview stage */
+.exp-layout{display:grid;grid-template-columns:300px 1fr;gap:40px;align-items:start}
+.exp-rail{display:flex;flex-direction:column;gap:6px;position:sticky;top:96px}
+.exp-rail-label{font-size:.7rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding:0 14px 10px}
+.exp-item{display:flex;align-items:center;gap:13px;width:100%;text-align:left;padding:13px 15px;border-radius:14px;
+  border:1px solid transparent;background:transparent;cursor:pointer;transition:background .2s,border-color .2s,transform .2s;position:relative}
+.exp-item:hover{background:var(--cream)}
+.exp-item .ei-ic{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:var(--cream);flex-shrink:0;transition:background .2s}
+.exp-item .ei-ic svg{width:19px;height:19px;color:var(--navy);transition:color .2s}
+.exp-item .ei-txt{display:flex;flex-direction:column;gap:1px;min-width:0}
+.exp-item .ei-name{font-weight:700;font-size:.95rem;color:var(--navy);line-height:1.2}
+.exp-item .ei-sub{font-size:.76rem;color:var(--muted);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.exp-item .ei-arrow{margin-left:auto;opacity:0;transform:translateX(-4px);transition:.2s;color:var(--saffron-deep)}
+.exp-item .ei-arrow svg{width:16px;height:16px}
+.exp-item.active{background:var(--navy);border-color:var(--navy);box-shadow:0 12px 26px -14px rgba(13,32,80,.6)}
+.exp-item.active .ei-ic{background:rgba(255,255,255,.12)}
+.exp-item.active .ei-ic svg{color:var(--saffron)}
+.exp-item.active .ei-name{color:#fff}
+.exp-item.active .ei-sub{color:rgba(255,255,255,.65)}
+.exp-item.active .ei-arrow{opacity:1;transform:none;color:var(--saffron)}
+/* mobile selector (hidden on desktop) */
+.exp-mobile-nav{display:none}
+.exp-stage{min-width:0}
 .exp-panel{display:none}
-.exp-panel.active{display:grid;grid-template-columns:.85fr 1.15fr;gap:48px;align-items:center;animation:fade .4s}
+.exp-panel.active{display:grid;grid-template-columns:.95fr 1.05fr;gap:40px;align-items:center;animation:fade .4s}
 @keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 .exp-info .tag{font-size:.76rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--teal)}
-.exp-info h3{font-family:'Fraunces',serif;font-weight:600;font-size:1.8rem;color:var(--navy);margin:10px 0 12px;line-height:1.15}
+.exp-info h3{font-family:'Fraunces',serif;font-weight:600;font-size:1.7rem;color:var(--navy);margin:10px 0 12px;line-height:1.15}
 .exp-info p{color:var(--muted);font-size:1rem;margin-bottom:16px}
 .exp-info ul{list-style:none;display:flex;flex-direction:column;gap:10px}
 .exp-info li{display:flex;gap:11px;align-items:flex-start;font-size:.93rem;font-weight:600;color:var(--ink)}
@@ -119,7 +175,18 @@ section{padding:90px 0}
 .pframe{width:248px;border:8px solid var(--navy);border-radius:30px;overflow:hidden;box-shadow:var(--shadow);background:var(--navy)}
 .pframe img{width:100%;border-radius:22px}
 .phone-duo{display:flex;gap:20px;justify-content:center;flex-wrap:wrap}
-.phone-duo .pframe{width:215px}
+.phone-duo .pframe{width:200px}
+/* mobile explorer nav */
+.exp-mobile-nav{align-items:center;gap:10px;margin-bottom:26px}
+.emn-arrow{width:46px;height:46px;flex-shrink:0;border-radius:13px;border:1px solid var(--line);background:var(--paper);
+  cursor:pointer;display:grid;place-items:center;color:var(--navy);transition:background .2s,border-color .2s}
+.emn-arrow:hover{background:var(--cream)}
+.emn-arrow svg{width:20px;height:20px}
+.emn-select-wrap{position:relative;flex:1;min-width:0}
+.emn-select-wrap select{appearance:none;-webkit-appearance:none;width:100%;padding:14px 44px 14px 18px;border-radius:13px;
+  border:1px solid var(--navy);background:var(--navy);color:#fff;font-family:inherit;font-weight:700;font-size:1rem;cursor:pointer;
+  box-shadow:0 10px 24px -14px rgba(13,32,80,.7)}
+.emn-caret{position:absolute;right:16px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--saffron);pointer-events:none}
 
 .showcase{background:var(--cream)}
 .show-row{display:grid;grid-template-columns:1fr 1.15fr;gap:54px;align-items:center;margin-bottom:84px}
@@ -135,9 +202,11 @@ section{padding:90px 0}
 
 .portals{background:var(--navy);color:#fff;position:relative;overflow:hidden}
 .portals .sec-head h2{color:#fff}.portals .sec-head p{color:rgba(255,255,255,.7)}.portals .sec-tag{color:var(--saffron)}
-.ptabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:38px}
-.ptab{padding:11px 22px;border-radius:999px;border:1px solid rgba(255,255,255,.18);background:transparent;color:rgba(255,255,255,.7);font-weight:700;font-size:.9rem;cursor:pointer;transition:.2s}
-.ptab.active{background:var(--saffron);border-color:var(--saffron);color:var(--navy)}
+.ptabs{display:inline-flex;gap:4px;margin-bottom:38px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:5px}
+.ptab{padding:10px 22px;border-radius:999px;border:none;background:transparent;color:rgba(255,255,255,.72);font-weight:700;font-size:.9rem;cursor:pointer;transition:.25s;white-space:nowrap}
+.ptab:hover{color:#fff}
+.ptab.active{background:var(--saffron);color:var(--navy);box-shadow:0 6px 16px -8px rgba(240,165,0,.7)}
+@media(max-width:560px){.ptabs{display:flex;width:100%}.ptab{flex:1;padding:10px 8px;font-size:.82rem}}
 .ppanel{display:none;grid-template-columns:1fr 1fr;gap:46px;align-items:center}
 .ppanel.active{display:grid;animation:fade .4s}
 .ppanel h3{font-family:'Fraunces',serif;font-weight:600;font-size:1.9rem;margin-bottom:16px}
@@ -203,17 +272,102 @@ footer{background:var(--navy);color:rgba(255,255,255,.65);padding:60px 0 30px}
   .hero-grid,.ppanel.active,.secfeat,.foot-grid,.show-row,.show-row.flip,.exp-panel.active{grid-template-columns:1fr}
   .show-row.flip .show-text{order:0}
   .exp-panel.active .exp-shot{order:-1}
+  .exp-layout{grid-template-columns:1fr;gap:0}
+  .exp-rail{display:none}
+  .exp-mobile-nav{display:flex}
   .hero-visual{margin-top:30px}
   .shot-phone{width:120px;right:8px;bottom:-26px}
   .modgrid,.pwagrid{grid-template-columns:1fr 1fr}
   .statgrid{grid-template-columns:1fr 1fr;gap:36px 20px}
-  .navlinks{display:none}.menu-btn{display:block}
+  .navlinks{display:none}.menu-btn{display:flex}
+  .nav-cta{display:none}
   .foot-grid{grid-template-columns:1fr 1fr}
   .show-row{margin-bottom:60px}
 }
 @media(max-width:560px){
   .modgrid,.pwagrid,.statgrid,.foot-grid{grid-template-columns:1fr}
   section{padding:60px 0}.cta-box{padding:48px 24px}
+}
+
+/* ====== DESIGN REFRESH ====== */
+/* subtle dotted texture + gradient on light sections for depth */
+.sec-tag{display:inline-flex;align-items:center;gap:8px}
+.sec-tag::before{content:"";width:22px;height:2px;border-radius:2px;background:linear-gradient(90deg,var(--saffron),var(--teal))}
+/* ghost/secondary button polish */
+.btn-line{background:#fff;color:var(--navy);border:1px solid var(--line);box-shadow:0 6px 18px -12px rgba(13,32,80,.4)}
+.btn-line:hover{transform:translateY(-2px);border-color:rgba(13,32,80,.22)}
+/* card hover lift refinement already present; add soft ring on explorer frames */
+.frame,.pframe,.shot-desktop{transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s}
+.exp-shot:hover .frame,.exp-shot:hover .pframe{transform:translateY(-4px)}
+
+/* ====== VIDEO SECTION ====== */
+.videosec{position:relative;background:var(--navy);color:#fff;overflow:hidden}
+.videosec .hero-bg{position:absolute;inset:0;z-index:0}
+.videosec .blob{position:absolute;border-radius:50%;filter:blur(90px)}
+.videosec .vb1{width:520px;height:520px;background:radial-gradient(circle,rgba(240,165,0,.42),transparent 70%);top:-160px;right:-120px}
+.videosec .vb2{width:460px;height:460px;background:radial-gradient(circle,rgba(15,157,140,.4),transparent 70%);bottom:-180px;left:-120px}
+.videosec .wrap{position:relative;z-index:2}
+.videosec .sec-head{margin:0 auto 40px;text-align:center}
+.videosec .sec-head h2{color:#fff}
+.videosec .sec-head p{color:rgba(255,255,255,.72)}
+.videosec .sec-tag{color:var(--saffron);justify-content:center}
+.video-stage{max-width:960px;margin:0 auto;border-radius:22px;overflow:hidden;position:relative;cursor:pointer;
+  box-shadow:0 40px 90px -30px rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.14);background:#000;aspect-ratio:16/9}
+.video-stage img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s,filter .4s}
+.video-stage:hover img{transform:scale(1.04);filter:brightness(.82)}
+.video-stage::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(13,32,80,.55),transparent 55%)}
+.play-btn{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+.play-circle{width:88px;height:88px;border-radius:50%;background:rgba(255,255,255,.16);backdrop-filter:blur(6px);
+  display:grid;place-items:center;border:2px solid rgba(255,255,255,.55);transition:transform .25s,background .25s;position:relative}
+.play-circle::before{content:"";position:absolute;inset:-10px;border-radius:50%;border:2px solid rgba(240,165,0,.5);animation:ripple 2.4s infinite}
+@keyframes ripple{0%{transform:scale(.85);opacity:.9}100%{transform:scale(1.5);opacity:0}}
+.video-stage:hover .play-circle{transform:scale(1.08);background:var(--saffron)}
+.video-stage:hover .play-circle svg{color:var(--navy)}
+.play-circle svg{width:34px;height:34px;color:#fff;margin-left:5px;transition:color .25s}
+.play-label{font-weight:700;font-size:1rem;text-shadow:0 2px 12px rgba(0,0,0,.5);letter-spacing:.01em}
+.video-meta{display:flex;gap:26px;justify-content:center;flex-wrap:wrap;margin-top:26px;font-size:.86rem;font-weight:600;color:rgba(255,255,255,.7)}
+.video-meta span{display:flex;align-items:center;gap:8px}
+.video-meta svg{width:16px;height:16px;color:var(--saffron)}
+
+/* video lightbox */
+.vmodal{position:fixed;inset:0;z-index:10001;background:rgba(5,12,30,.92);backdrop-filter:blur(8px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+  padding:max(16px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));
+  opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s}
+.vmodal.open{opacity:1;visibility:visible}
+/* size the player by BOTH width and height so it never overflows in any orientation;
+   16:9 video: width capped at 1080, height capped to viewport */
+.vmodal-inner{position:relative;width:min(1080px,100%);max-width:calc((100dvh - 120px) * 16 / 9)}
+.vmodal video{width:100%;aspect-ratio:16/9;border-radius:14px;background:#000;
+  box-shadow:0 30px 80px -20px rgba(0,0,0,.7);display:block;object-fit:contain}
+/* native fullscreen: let the video fill the screen edge-to-edge */
+#demo-video:fullscreen{width:100vw;height:100vh;border-radius:0;aspect-ratio:auto;object-fit:contain;background:#000}
+#demo-video:-webkit-full-screen{width:100vw;height:100vh;border-radius:0;object-fit:contain;background:#000}
+.vmodal-close{position:absolute;top:-46px;right:0;width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.3);
+  background:rgba(255,255,255,.1);color:#fff;cursor:pointer;display:grid;place-items:center;transition:background .2s;z-index:2}
+.vmodal-close:hover{background:rgba(255,255,255,.22)}
+.vmodal-close svg{width:20px;height:20px}
+/* prominent fullscreen action + portrait hint */
+.vmodal-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center}
+.vmodal-fs{display:inline-flex;align-items:center;gap:8px;font-family:inherit;font-weight:700;font-size:.9rem;
+  color:var(--navy);background:var(--saffron);border:none;border-radius:999px;padding:11px 20px;cursor:pointer;
+  box-shadow:0 10px 24px -10px rgba(240,165,0,.6);transition:transform .2s}
+.vmodal-fs:hover{transform:translateY(-2px)}
+.vmodal-fs svg{width:17px;height:17px}
+.vmodal-hint{display:none;align-items:center;gap:8px;color:rgba(255,255,255,.78);font-size:.84rem;font-weight:600}
+.vmodal-hint svg{width:17px;height:17px;color:var(--saffron);animation:rothint 2.6s ease-in-out infinite}
+@keyframes rothint{0%,55%,100%{transform:rotate(0)}70%,90%{transform:rotate(90deg)}}
+/* show rotate hint only on portrait, coarse-pointer (touch) devices */
+@media (orientation:portrait) and (pointer:coarse){
+  .vmodal-hint{display:inline-flex}
+}
+@media(max-width:560px){
+  .play-circle{width:70px;height:70px}.play-circle svg{width:28px;height:28px}
+  .vmodal-close{top:-42px}
+  .vmodal-fs{font-size:.85rem;padding:10px 18px}
+}
+@media(max-width:920px) and (orientation:landscape){
+  .vmodal-inner{max-width:calc((100dvh - 90px) * 16 / 9)}
 }
 
 .modal-overlay{
@@ -296,12 +450,28 @@ footer{background:var(--navy);color:rgba(255,255,255,.65);padding:60px 0 30px}
   <nav class="wrap">
     <a href="#" class="brand"><span class="mark"><svg viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg"><polygon points="110,8 200,60 200,160 110,212 20,160 20,60" fill="none" stroke="#f0a500" stroke-width="11"/><polygon points="110,22 186,66 186,154 110,198 34,154 34,66" fill="#0d2050"/><path d="M110,42 C95,66 91,95 110,116 C129,95 125,66 110,42 Z" fill="#f0a500"/><path d="M110,56 C101,75 98,94 110,110 C122,94 119,75 110,56 Z" fill="#fdeea0"/><polygon points="40,168 58,168 96,40 78,40" fill="#ffffff"/><polygon points="96,40 110,40 92,168 74,168" fill="#ffffff"/><rect x="46" y="120" width="50" height="14" rx="3" fill="#ffffff"/><polygon points="112,40 130,40 142,168 124,168" fill="#f0a500"/><polygon points="148,40 166,40 142,168 124,168" fill="#f0a500"/></svg></span><span>AkshayVidya<small>powered by EduChetna</small></span></a>
     <div class="navlinks">
-      <a href="#modules">Modules</a><a href="#explorer">Explore</a><a href="#portals">Portals</a><a href="#security">Security</a><a href="#pwa">Why PWA</a>
+      <a href="#demo">Demo</a><a href="#modules">Modules</a><a href="#explorer">Explore</a><a href="#portals">Portals</a><a href="#security">Security</a>
     </div>
-    <button type="button" class="btn btn-ghost open-contact" data-intent="demo">Book a Demo</button>
-    <button class="menu-btn" aria-label="menu"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0d2050" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    <div class="nav-right">
+      <button type="button" class="nav-cta open-contact" data-intent="demo">Book a demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      <button class="menu-btn" id="menu-open" aria-label="Open menu"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0d2050" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    </div>
   </nav>
 </header>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+  <div class="mobile-menu-panel">
+    <button class="mm-close" id="menu-close" aria-label="Close menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    <a href="#demo" class="mm-link">Watch Demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></a>
+    <a href="#modules" class="mm-link">Modules <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></a>
+    <a href="#explorer" class="mm-link">Explore Product <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></a>
+    <a href="#portals" class="mm-link">Role Portals <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></a>
+    <a href="#security" class="mm-link">Security <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></a>
+    <a href="#pwa" class="mm-link">Why PWA <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></a>
+    <button type="button" class="btn btn-primary mm-cta open-contact" data-intent="demo">Book a Live Demo →</button>
+  </div>
+</div>
 
 <section class="hero">
   <div class="hero-bg"><div class="blob b1"></div><div class="blob b2"></div></div>
@@ -312,7 +482,7 @@ footer{background:var(--navy);color:rgba(255,255,255,.65);padding:60px 0 30px}
       <p class="lead">AkshayVidya is a multi-tenant School ERP and Progressive Web App. Admissions, fees, academics, attendance and parent communication — installable on any phone, tablet or desktop. No app store. No downloads.</p>
       <div class="hero-cta">
         <button type="button" class="btn btn-primary open-contact" data-intent="demo">Book a Live Demo →</button>
-        <a href="#explorer" class="btn" style="background:#fff;color:var(--navy);border:1px solid var(--line)">Explore the Modules</a>
+        <button type="button" class="btn btn-line open-video"><svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>Watch 2-min Demo</button>
       </div>
       <div class="trust">
         <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Schema-level data isolation</span>
@@ -332,6 +502,30 @@ footer{background:var(--navy);color:rgba(255,255,255,.65);padding:60px 0 30px}
   <span>Admissions&nbsp;&nbsp; Fee Management&nbsp;&nbsp; Report Cards&nbsp;&nbsp; Attendance&nbsp;&nbsp; WhatsApp Alerts&nbsp;&nbsp; Timetables&nbsp;&nbsp; Online Exams&nbsp;&nbsp; Parent Portal</span>
 </div></div>
 
+<!-- VIDEO DEMO -->
+<section id="demo" class="videosec">
+  <div class="hero-bg"><div class="blob vb1"></div><div class="blob vb2"></div></div>
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-tag">See it in action</span>
+      <h2>Watch AkshayVidya run a real school.</h2>
+      <p>A quick walkthrough across admissions, fees and payments, attendance, report cards and the parent app — exactly as your staff and families will use it.</p>
+    </div>
+    <div class="video-stage reveal open-video" role="button" tabindex="0" aria-label="Play demo video">
+      <picture><source srcset="assets/screens/video_poster.webp" type="image/webp"><img src="assets/screens/video_poster.jpg" alt="AkshayVidya product demo"></picture>
+      <div class="play-btn">
+        <div class="play-circle"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+        <span class="play-label">Play product demo</span>
+      </div>
+    </div>
+    <div class="video-meta reveal">
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Full product tour</span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Real screens, real workflows</span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg>Desktop &amp; mobile PWA</span>
+    </div>
+  </div>
+</section>
+
 <!-- MODULES OVERVIEW -->
 <section id="modules">
   <div class="wrap">
@@ -343,9 +537,9 @@ footer{background:var(--navy);color:rgba(255,255,255,.65);padding:60px 0 30px}
     <div class="modgrid">
       <div class="mod reveal"><div class="mic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><h3>Student Information System</h3><p>Full student lifecycle from admission enquiry to graduation.</p><ul><li>Admission workflow & offers</li><li>Aadhaar last-4, UIDAI-compliant</li><li>Guardian & enrollment records</li></ul></div>
       <div class="mod reveal"><div class="mic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></div><h3>Indian Fee Management</h3><p>Built for transport, lab and library heads with real late-fee logic.</p><ul><li>Class & student-wise structures</li><li>Razorpay with verified webhooks</li><li>GST invoices with HSN/SAC codes</li></ul></div>
-      <div class="mod reveal"><div class="mic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div><h3>Academic Engine</h3><p>Where daily teaching lives — timetables, attendance and marks.</p><ul><li>CBSE / ICSE / State report cards</li><li>Per-period & daily attendance</li><li>Conflict-aware timetables</li></ul></div>
-      <div class="mod reveal"><div class="mic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div><h3>Examination Portal</h3><p>Run assessments online and capture offline marks effortlessly.</p><ul><li>Online quizzes</li><li>Offline marks entry</li><li>Auto grade computation</li></ul></div>
-      <div class="mod reveal"><div class="mic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><h3>Communication Hub</h3><p>Reach every parent on the channel they actually check.</p><ul><li>WhatsApp via Meta Cloud API</li><li>SMS (MSG91 / Fast2SMS) DLT-ready</li><li>In-app messaging & broadcasts</li></ul></div>
+      <div class="mod reveal"><div class="mic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div><h3>Academic Engine</h3><p>Where daily teaching lives — timetables, attendance and marks.</p><ul><li>Report cards</li><li>Per-period & daily attendance</li><li>Conflict-aware timetables</li></ul></div>
+      <div class="mod reveal"><div class="mic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div><h3>Quiz Portal</h3><p>Run assessments online and capture results effortlessly.</p><ul><li>Online quizzes</li><li>Results</li><li>Leaderboard</li></ul></div>
+      <div class="mod reveal"><div class="mic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><h3>Communication Hub</h3><p>Reach every parent on the channel they actually check.</p><ul><li>WhatsApp Communication</li><li>SMS ready</li><li>In-app messaging & broadcasts</li></ul></div>
       <div class="mod reveal"><div class="mic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg></div><h3>Child & Parent Portal</h3><p>A warmer, simpler interface designed just for students & families.</p><ul><li>Kid-only profile & homework</li><li>Online fee payment (parent)</li><li>Results & teacher notes</li></ul></div>
     </div>
   </div>
@@ -359,16 +553,65 @@ footer{background:var(--navy);color:rgba(255,255,255,.65);padding:60px 0 30px}
       <h2>Every module, shown with real screens.</h2>
       <p>Click through the actual interface — these are live views from AkshayVidya, the same screens your staff and families use every day.</p>
     </div>
-    <div class="exp-tabs reveal">
-      <button class="exp-tab active" data-e="fees"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>Fees</button>
-      <button class="exp-tab" data-e="payments"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Payments</button>
-      <button class="exp-tab" data-e="reports"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>Report Cards</button>
-      <button class="exp-tab" data-e="attendance"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Attendance</button>
-      <button class="exp-tab" data-e="academics"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Academics</button>
-      <button class="exp-tab" data-e="comms"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Communication</button>
-      <button class="exp-tab" data-e="onboarding"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>Bulk Onboarding</button>
-    </div>
+    <div class="exp-layout reveal">
+      <div class="exp-rail" role="tablist" aria-label="Product modules">
+        <div class="exp-rail-label">Modules</div>
+        <button class="exp-item active" data-e="fees" role="tab" aria-selected="true">
+          <span class="ei-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></span>
+          <span class="ei-txt"><span class="ei-name">Fees</span><span class="ei-sub">Components, schedules, discounts</span></span>
+          <span class="ei-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 6l6 6-6 6"/></svg></span>
+        </button>
+        <button class="exp-item" data-e="payments" role="tab" aria-selected="false">
+          <span class="ei-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="12" cy="12" r="2.5"/></svg></span>
+          <span class="ei-txt"><span class="ei-name">Payments</span><span class="ei-sub">Razorpay, online fee collection</span></span>
+          <span class="ei-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 6l6 6-6 6"/></svg></span>
+        </button>
+        <button class="exp-item" data-e="reports" role="tab" aria-selected="false">
+          <span class="ei-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span>
+          <span class="ei-txt"><span class="ei-name">Report Cards</span><span class="ei-sub">CBSE layout, review &amp; publish</span></span>
+          <span class="ei-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 6l6 6-6 6"/></svg></span>
+        </button>
+        <button class="exp-item" data-e="attendance" role="tab" aria-selected="false">
+          <span class="ei-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>
+          <span class="ei-txt"><span class="ei-name">Attendance</span><span class="ei-sub">One-tap P / A / L marking</span></span>
+          <span class="ei-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 6l6 6-6 6"/></svg></span>
+        </button>
+        <button class="exp-item" data-e="academics" role="tab" aria-selected="false">
+          <span class="ei-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>
+          <span class="ei-txt"><span class="ei-name">Academics</span><span class="ei-sub">Subjects, timetable, leave</span></span>
+          <span class="ei-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 6l6 6-6 6"/></svg></span>
+        </button>
+        <button class="exp-item" data-e="comms" role="tab" aria-selected="false">
+          <span class="ei-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
+          <span class="ei-txt"><span class="ei-name">Communication</span><span class="ei-sub">Messages, alerts, concerns</span></span>
+          <span class="ei-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 6l6 6-6 6"/></svg></span>
+        </button>
+        <button class="exp-item" data-e="onboarding" role="tab" aria-selected="false">
+          <span class="ei-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></span>
+          <span class="ei-txt"><span class="ei-name">Bulk Onboarding</span><span class="ei-sub">Import a whole school via CSV</span></span>
+          <span class="ei-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 6l6 6-6 6"/></svg></span>
+        </button>
+      </div>
 
+      <!-- mobile: dropdown + prev/next -->
+      <div class="exp-mobile-nav">
+        <button class="emn-arrow" id="emn-prev" aria-label="Previous module"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 6l-6 6 6 6"/></svg></button>
+        <div class="emn-select-wrap">
+          <select id="emn-select" aria-label="Choose a module">
+            <option value="fees">Fees</option>
+            <option value="payments">Payments</option>
+            <option value="reports">Report Cards</option>
+            <option value="attendance">Attendance</option>
+            <option value="academics">Academics</option>
+            <option value="comms">Communication</option>
+            <option value="onboarding">Bulk Onboarding</option>
+          </select>
+          <svg class="emn-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <button class="emn-arrow" id="emn-next" aria-label="Next module"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 6l6 6-6 6"/></svg></button>
+      </div>
+
+      <div class="exp-stage">
     <div class="exp-panel active" data-epanel="fees">
       <div class="exp-info">
         <span class="tag">Accounts & Admin</span>
@@ -466,6 +709,8 @@ footer{background:var(--navy);color:rgba(255,255,255,.65);padding:60px 0 30px}
       </div>
       <div class="exp-shot"><div class="frame"><div class="bar"><i></i><i></i><i></i></div><picture><source srcset="assets/screens/bulk_uploads.webp" type="image/webp"><img src="assets/screens/bulk_uploads.jpg" alt="Bulk uploads" loading="lazy"></picture></div></div>
     </div>
+      </div><!-- /exp-stage -->
+    </div><!-- /exp-layout -->
   </div>
 </section>
 
@@ -641,6 +886,30 @@ footer{background:var(--navy);color:rgba(255,255,255,.65);padding:60px 0 30px}
   </div>
 </footer>
 
+<!-- VIDEO LIGHTBOX -->
+<div class="vmodal" id="video-modal" aria-hidden="true">
+  <div class="vmodal-inner">
+    <button type="button" class="vmodal-close" id="video-close" aria-label="Close video">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+    <video id="demo-video" controls playsinline preload="none"
+      poster="assets/screens/video_poster.jpg"
+      src="https://akshayvidya-static.s3.ap-south-1.amazonaws.com/avdemo9may.mp4">
+      Your browser does not support embedded video.
+    </video>
+  </div>
+  <div class="vmodal-actions">
+    <button type="button" class="vmodal-fs" id="video-fs">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+      Fullscreen
+    </button>
+    <span class="vmodal-hint">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 19h2"/></svg>
+      Best viewed in landscape
+    </span>
+  </div>
+</div>
+
 <div class="modal-overlay" id="contact-modal" aria-hidden="true">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="contact-modal-title">
     <div class="modal-head">
@@ -714,12 +983,134 @@ function tabset(btnSel, panelAttr, dataKey){
     });
   });
 }
-tabset('.exp-tab','data-epanel','e');
 tabset('.ptab','data-panel','p');
+
+/* explorer: vertical rail + mobile select + prev/next, all synced */
+(function(){
+  const order=['fees','payments','reports','attendance','academics','comms','onboarding'];
+  const items=Array.from(document.querySelectorAll('.exp-item'));
+  const panels=Array.from(document.querySelectorAll('.exp-panel'));
+  const select=document.getElementById('emn-select');
+  const prev=document.getElementById('emn-prev');
+  const next=document.getElementById('emn-next');
+  if(!items.length) return;
+  let current='fees';
+  function show(key){
+    current=key;
+    items.forEach(b=>{const on=b.dataset.e===key;b.classList.toggle('active',on);b.setAttribute('aria-selected',on?'true':'false');});
+    panels.forEach(p=>p.classList.toggle('active',p.dataset.epanel===key));
+    if(select)select.value=key;
+  }
+  items.forEach(b=>b.addEventListener('click',()=>show(b.dataset.e)));
+  if(select)select.addEventListener('change',()=>show(select.value));
+  if(prev)prev.addEventListener('click',()=>{const i=order.indexOf(current);show(order[(i-1+order.length)%order.length]);});
+  if(next)next.addEventListener('click',()=>{const i=order.indexOf(current);show(order[(i+1)%order.length]);});
+})();
+
+/* mobile menu */
+(function(){
+  const mm=document.getElementById('mobile-menu');
+  const openBtn=document.getElementById('menu-open');
+  const closeBtn=document.getElementById('menu-close');
+  if(!mm||!openBtn) return;
+  function open(){mm.classList.add('open');mm.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');}
+  function close(){mm.classList.remove('open');mm.setAttribute('aria-hidden','true');document.body.classList.remove('modal-open');}
+  openBtn.addEventListener('click',open);
+  closeBtn.addEventListener('click',close);
+  mm.addEventListener('click',e=>{if(e.target===mm)close();});
+  mm.querySelectorAll('.mm-link').forEach(a=>a.addEventListener('click',close));
+  const mmCta=mm.querySelector('.mm-cta');if(mmCta)mmCta.addEventListener('click',close);
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&mm.classList.contains('open'))close();});
+})();
 const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12});
 document.querySelectorAll('.reveal').forEach(e=>io.observe(e));
 const co=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){const el=e.target,end=+el.dataset.count;let n=0;const step=()=>{n++;el.textContent=n;if(n<end)setTimeout(step,140)};step();co.unobserve(el)}})},{threshold:.5});
 document.querySelectorAll('[data-count]').forEach(e=>co.observe(e));
+
+/* video lightbox with seamless orientation handling */
+(function(){
+  const vmodal=document.getElementById('video-modal');
+  const video=document.getElementById('demo-video');
+  const vclose=document.getElementById('video-close');
+  const vfs=document.getElementById('video-fs');
+  if(!vmodal||!video) return;
+
+  const isTouch=window.matchMedia('(pointer:coarse)').matches;
+  const smallScreen=()=>window.matchMedia('(max-width:920px)').matches;
+
+  function tryLockLandscape(){
+    // progressive enhancement: only works on some Android browsers, requires fullscreen first
+    try{
+      if(screen.orientation && screen.orientation.lock){
+        screen.orientation.lock('landscape').catch(()=>{});
+      }
+    }catch(e){/* unsupported — fine, user rotates manually */}
+  }
+  function unlockOrientation(){
+    try{ if(screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); }catch(e){}
+  }
+
+  function enterFullscreen(){
+    const el=video;
+    // iOS Safari only supports fullscreen on the video element itself
+    if(el.webkitEnterFullscreen){ el.webkitEnterFullscreen(); return true; }
+    const req=el.requestFullscreen||el.webkitRequestFullscreen||el.msRequestFullscreen;
+    if(req){
+      const p=req.call(el);
+      if(p&&p.then){ p.then(tryLockLandscape).catch(()=>{}); } else { tryLockLandscape(); }
+      return true;
+    }
+    return false;
+  }
+  function exitFullscreen(){
+    const d=document;
+    if(d.fullscreenElement||d.webkitFullscreenElement){
+      (d.exitFullscreen||d.webkitExitFullscreen||d.msExitFullscreen).call(d);
+    }
+    unlockOrientation();
+  }
+
+  function openVideo(){
+    vmodal.classList.add('open');
+    vmodal.setAttribute('aria-hidden','false');
+    document.body.classList.add('modal-open');
+    const p=video.play(); if(p&&p.catch)p.catch(()=>{});
+    // On phones, a landscape-native video is best seen fullscreen — request it on play.
+    // The OS then rotates automatically (and reverses on exit). Desktop keeps inline lightbox.
+    if(isTouch && smallScreen()){
+      // slight delay so playback starts before the fullscreen/rotation transition
+      setTimeout(enterFullscreen,150);
+    }
+  }
+  function closeVideo(){
+    exitFullscreen();
+    video.pause();
+    vmodal.classList.remove('open');
+    vmodal.setAttribute('aria-hidden','true');
+    document.body.classList.remove('modal-open');
+  }
+
+  document.querySelectorAll('.open-video').forEach(el=>{
+    el.addEventListener('click',openVideo);
+    el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openVideo();}});
+  });
+  vclose.addEventListener('click',closeVideo);
+  if(vfs)vfs.addEventListener('click',enterFullscreen);
+  vmodal.addEventListener('click',e=>{if(e.target===vmodal)closeVideo();});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&vmodal.classList.contains('open')&&!document.fullscreenElement)closeVideo();});
+
+  // When the user exits fullscreen (back gesture / system control), unlock orientation
+  // so the page returns to portrait seamlessly; keep the lightbox open so they can replay.
+  function onFsChange(){
+    if(!document.fullscreenElement && !document.webkitFullscreenElement){
+      unlockOrientation();
+    }
+  }
+  document.addEventListener('fullscreenchange',onFsChange);
+  document.addEventListener('webkitfullscreenchange',onFsChange);
+  // iOS fires this on the video element when leaving its native fullscreen
+  video.addEventListener('webkitendfullscreen',unlockOrientation);
+})();
 
 (function(){
   const modal=document.getElementById('contact-modal');

@@ -2,7 +2,7 @@
 // Strategy: precache the shell, cache-first for static assets,
 // network-first (with offline fallback) for page navigations.
 
-const VERSION = 'akshayvidya-v2';
+const VERSION = 'akshayvidya-v6';
 const CORE = [
   '/index.html',
   '/manifest.webmanifest',
