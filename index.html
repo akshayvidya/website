@@ -200,6 +200,28 @@ section{padding:90px 0}
 .show-text li{display:flex;gap:11px;align-items:flex-start;font-size:.95rem;font-weight:600;color:var(--ink)}
 .show-text li svg{width:19px;height:19px;color:var(--saffron-deep);flex-shrink:0;margin-top:3px}
 
+/* analytics showcase */
+.analytics-sec{background:var(--navy);color:#fff;position:relative;overflow:hidden}
+.analytics-sec .hero-bg{position:absolute;inset:0;z-index:0}
+.analytics-sec .blob{position:absolute;border-radius:50%;filter:blur(90px)}
+.analytics-sec .ab1{width:500px;height:500px;background:radial-gradient(circle,rgba(240,165,0,.34),transparent 70%);top:-160px;right:-120px}
+.analytics-sec .ab2{width:460px;height:460px;background:radial-gradient(circle,rgba(15,157,140,.4),transparent 70%);bottom:-180px;left:-140px}
+.analytics-sec .wrap{position:relative;z-index:2}
+.analytics-sec .sec-head h2{color:#fff}
+.analytics-sec .sec-head p{color:rgba(255,255,255,.72)}
+.analytics-sec .sec-tag{color:var(--saffron)}
+.analytics-sec .show-text h3{color:#fff}
+.analytics-sec .show-text p{color:rgba(255,255,255,.72)}
+.analytics-sec .show-text li{color:rgba(255,255,255,.9)}
+.analytics-sec .show-text .tag{color:var(--saffron)}
+.astat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:56px}
+.astat{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:22px 20px}
+.astat .an{font-family:'Fraunces',serif;font-weight:600;font-size:2.1rem;color:var(--saffron);line-height:1}
+.astat .an span{font-size:1.1rem}
+.astat .al{font-size:.82rem;color:rgba(255,255,255,.72);margin-top:8px;font-weight:600;line-height:1.35}
+.ashots{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:0 0 84px}
+.analytics-sec .frame{border:1px solid rgba(255,255,255,.12)}
+
 .portals{background:var(--navy);color:#fff;position:relative;overflow:hidden}
 .portals .sec-head h2{color:#fff}.portals .sec-head p{color:rgba(255,255,255,.7)}.portals .sec-tag{color:var(--saffron)}
 .ptabs{display:inline-flex;gap:4px;margin-bottom:38px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:5px}
@@ -279,13 +301,14 @@ footer{background:var(--navy);color:rgba(255,255,255,.65);padding:60px 0 30px}
   .shot-phone{width:120px;right:8px;bottom:-26px}
   .modgrid,.pwagrid{grid-template-columns:1fr 1fr}
   .statgrid{grid-template-columns:1fr 1fr;gap:36px 20px}
+  .astat-row{grid-template-columns:1fr 1fr;gap:14px}
   .navlinks{display:none}.menu-btn{display:flex}
   .nav-cta{display:none}
   .foot-grid{grid-template-columns:1fr 1fr}
   .show-row{margin-bottom:60px}
 }
 @media(max-width:560px){
-  .modgrid,.pwagrid,.statgrid,.foot-grid{grid-template-columns:1fr}
+  .modgrid,.pwagrid,.statgrid,.foot-grid,.ashots{grid-template-columns:1fr}
   section{padding:60px 0}.cta-box{padding:48px 24px}
 }
 
@@ -450,7 +473,7 @@ footer{background:var(--navy);color:rgba(255,255,255,.65);padding:60px 0 30px}
   <nav class="wrap">
     <a href="#" class="brand"><span class="mark"><svg viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg"><polygon points="110,8 200,60 200,160 110,212 20,160 20,60" fill="none" stroke="#f0a500" stroke-width="11"/><polygon points="110,22 186,66 186,154 110,198 34,154 34,66" fill="#0d2050"/><path d="M110,42 C95,66 91,95 110,116 C129,95 125,66 110,42 Z" fill="#f0a500"/><path d="M110,56 C101,75 98,94 110,110 C122,94 119,75 110,56 Z" fill="#fdeea0"/><polygon points="40,168 58,168 96,40 78,40" fill="#ffffff"/><polygon points="96,40 110,40 92,168 74,168" fill="#ffffff"/><rect x="46" y="120" width="50" height="14" rx="3" fill="#ffffff"/><polygon points="112,40 130,40 142,168 124,168" fill="#f0a500"/><polygon points="148,40 166,40 142,168 124,168" fill="#f0a500"/></svg></span><span>AkshayVidya<small>powered by EduChetna</small></span></a>
     <div class="navlinks">
-      <a href="#demo">Demo</a><a href="#modules">Modules</a><a href="#explorer">Explore</a><a href="#portals">Portals</a><a href="#security">Security</a>
+      <a href="#demo">Demo</a><a href="#modules">Modules</a><a href="#explorer">Explore</a><a href="#analytics">Analytics</a><a href="#portals">Portals</a>
     </div>
     <div class="nav-right">
       <button type="button" class="nav-cta open-contact" data-intent="demo">Book a demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
@@ -466,6 +489,7 @@ footer{background:var(--navy);color:rgba(255,255,255,.65);padding:60px 0 30px}
     <a href="#demo" class="mm-link">Watch Demo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></a>
     <a href="#modules" class="mm-link">Modules <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></a>
     <a href="#explorer" class="mm-link">Explore Product <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></a>
+    <a href="#analytics" class="mm-link">Analytics <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></a>
     <a href="#portals" class="mm-link">Role Portals <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></a>
     <a href="#security" class="mm-link">Security <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></a>
     <a href="#pwa" class="mm-link">Why PWA <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></a>
@@ -541,6 +565,7 @@ footer{background:var(--navy);color:rgba(255,255,255,.65);padding:60px 0 30px}
       <div class="mod reveal"><div class="mic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div><h3>Quiz Portal</h3><p>Run assessments online and capture results effortlessly.</p><ul><li>Online quizzes</li><li>Results</li><li>Leaderboard</li></ul></div>
       <div class="mod reveal"><div class="mic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><h3>Communication Hub</h3><p>Reach every parent on the channel they actually check.</p><ul><li>WhatsApp Communication</li><li>SMS ready</li><li>In-app messaging & broadcasts</li></ul></div>
       <div class="mod reveal"><div class="mic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg></div><h3>Child & Parent Portal</h3><p>A warmer, simpler interface designed just for students & families.</p><ul><li>Kid-only profile & homework</li><li>Online fee payment (parent)</li><li>Results & teacher notes</li></ul></div>
+      <div class="mod reveal"><div class="mic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 15l3-4 3 3 4-6"/></svg></div><h3>Fee & Attendance Analytics</h3><p>Powerful dashboards that turn everyday data into decisions.</p><ul><li>Drill-down by grade, section & fee head</li><li>Collection & overdue at a glance</li><li>One-tap parent nudges on WhatsApp</li></ul></div>
     </div>
   </div>
 </section>
@@ -591,6 +616,11 @@ footer{background:var(--navy);color:rgba(255,255,255,.65);padding:60px 0 30px}
           <span class="ei-txt"><span class="ei-name">Bulk Onboarding</span><span class="ei-sub">Import a whole school via CSV</span></span>
           <span class="ei-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 6l6 6-6 6"/></svg></span>
         </button>
+        <button class="exp-item" data-e="analytics" role="tab" aria-selected="false">
+          <span class="ei-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 15l3-4 3 3 4-6"/></svg></span>
+          <span class="ei-txt"><span class="ei-name">Analytics</span><span class="ei-sub">Fee &amp; attendance, slice &amp; dice</span></span>
+          <span class="ei-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 6l6 6-6 6"/></svg></span>
+        </button>
       </div>
 
       <!-- mobile: dropdown + prev/next -->
@@ -605,6 +635,7 @@ footer{background:var(--navy);color:rgba(255,255,255,.65);padding:60px 0 30px}
             <option value="academics">Academics</option>
             <option value="comms">Communication</option>
             <option value="onboarding">Bulk Onboarding</option>
+            <option value="analytics">Analytics</option>
           </select>
           <svg class="emn-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
         </div>
@@ -709,8 +740,73 @@ footer{background:var(--navy);color:rgba(255,255,255,.65);padding:60px 0 30px}
       </div>
       <div class="exp-shot"><div class="frame"><div class="bar"><i></i><i></i><i></i></div><picture><source srcset="assets/screens/bulk_uploads.webp" type="image/webp"><img src="assets/screens/bulk_uploads.jpg" alt="Bulk uploads" loading="lazy"></picture></div></div>
     </div>
-      </div><!-- /exp-stage -->
+    <div class="exp-panel" data-epanel="analytics">
+      <div class="exp-info">
+        <span class="tag">Leadership · Insights</span>
+        <h3>Slice, dice, and act — on fees and attendance.</h3>
+        <p>Live dashboards that let you drill from the whole school down to a single section, zoom any trend, and act on the exact students or parents who need attention.</p>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Filter by year, grade, section and fee head — instantly</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Click any chart to drill in, brush any trend to zoom</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Notify overdue or absent students' parents on WhatsApp, in one tap</li>
+        </ul>
+      </div>
+      <div class="exp-shot"><div class="frame"><div class="bar"><i></i><i></i><i></i></div><picture><source srcset="assets/screens/fee_analytics.webp" type="image/webp"><img src="assets/screens/fee_analytics.jpg" alt="Fee collection analytics dashboard" loading="lazy"></picture></div></div>
+    </div>
+    </div><!-- /exp-stage -->
     </div><!-- /exp-layout -->
+  </div>
+</section>
+
+<!-- ANALYTICS SHOWCASE -->
+<section id="analytics" class="analytics-sec">
+  <div class="hero-bg"><div class="blob ab1"></div><div class="blob ab2"></div></div>
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-tag">Analytics &amp; Insights</span>
+      <h2>Your school's data — finally working for you.</h2>
+      <p>Two powerful dashboards turn thousands of fee and attendance records into clear, clickable insight. Filter, drill down, zoom a trend, and act — all in one place.</p>
+    </div>
+
+    <div class="astat-row reveal">
+      <div class="astat"><div class="an">89.9%</div><div class="al">Overall attendance, live</div></div>
+      <div class="astat"><div class="an">₹15.1<span>Cr</span></div><div class="al">Total billed, tracked to the rupee</div></div>
+      <div class="astat"><div class="an">4</div><div class="al">Drill-down levels: year → grade → section → fee head</div></div>
+      <div class="astat"><div class="an">1&#8202;tap</div><div class="al">Notify overdue or absent parents on WhatsApp</div></div>
+    </div>
+
+    <div class="show-row reveal">
+      <div class="show-text">
+        <span class="tag">Attendance Analytics</span>
+        <h3>See who needs attention — then reach their parents.</h3>
+        <p>School-wide attendance at a glance, broken down by section and grade. Spot every student below your threshold, and message their guardians without leaving the page.</p>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Daily trend with brush-to-zoom, plus Present / Absent / Late mix</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Attendance % by section and by grade — click a bar to filter everything</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>"Students needing attention" list with one-tap WhatsApp nudge to parents</li>
+        </ul>
+      </div>
+      <div class="frame"><div class="bar"><i></i><i></i><i></i></div><picture><source srcset="assets/screens/attendance_analytics.webp" type="image/webp"><img src="assets/screens/attendance_analytics.jpg" alt="Attendance analytics dashboard" loading="lazy"></picture></div>
+    </div>
+
+    <div class="ashots reveal">
+      <div class="frame"><div class="bar"><i></i><i></i><i></i></div><picture><source srcset="assets/screens/attendance_bysection.webp" type="image/webp"><img src="assets/screens/attendance_bysection.jpg" alt="Attendance by section and grade" loading="lazy"></picture></div>
+      <div class="frame"><div class="bar"><i></i><i></i><i></i></div><picture><source srcset="assets/screens/attendance_notify.webp" type="image/webp"><img src="assets/screens/attendance_notify.jpg" alt="Students needing attention with WhatsApp notify" loading="lazy"></picture></div>
+    </div>
+
+    <div class="show-row flip reveal">
+      <div class="show-text">
+        <span class="tag">Fee Collection Analytics</span>
+        <h3>Know exactly what's owed — and nudge who owes it.</h3>
+        <p>Two honest lenses on collection: what's actually due today versus the full year's billing. Drill from the whole school down to one section's tuition fee, then act on the parents behind the numbers.</p>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Still-owed vs total-billed, with collection rate on due installments</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Monthly collection trend and a click-to-filter breakdown by fee head</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Filter by year, grade, section and head — right down to a single class</li>
+        </ul>
+      </div>
+      <div class="frame"><div class="bar"><i></i><i></i><i></i></div><picture><source srcset="assets/screens/fee_analytics.webp" type="image/webp"><img src="assets/screens/fee_analytics.jpg" alt="Fee collection analytics dashboard" loading="lazy"></picture></div>
+    </div>
   </div>
 </section>
 
@@ -987,7 +1083,7 @@ tabset('.ptab','data-panel','p');
 
 /* explorer: vertical rail + mobile select + prev/next, all synced */
 (function(){
-  const order=['fees','payments','reports','attendance','academics','comms','onboarding'];
+  const order=['fees','payments','reports','attendance','academics','comms','onboarding','analytics'];
   const items=Array.from(document.querySelectorAll('.exp-item'));
   const panels=Array.from(document.querySelectorAll('.exp-panel'));
   const select=document.getElementById('emn-select');
